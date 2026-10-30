@@ -223,7 +223,7 @@
   --reflection-ink: oklch(0.94 0.02 85 / 50%);
   --contact-shadow: oklch(0.04 0 0 / 75%);
 }
-.photo-niche-original { position: absolute; bottom: 0; left: 0; width: 100%; height: 150cqw; overflow: hidden; mask-image: linear-gradient(90deg, transparent, var(--foreground) 14%, var(--foreground) 86%, transparent), linear-gradient(to bottom, transparent, var(--foreground) 12%, var(--foreground) 76%, transparent 89%); mask-composite: intersect; }
+.photo-niche-original { position: absolute; bottom: 0; left: 0; width: 100%; height: 150cqw; overflow: hidden; mask-image: linear-gradient(90deg, transparent, var(--foreground) 14%, var(--foreground) 86%, transparent), linear-gradient(to bottom, transparent, var(--foreground) 12%, var(--foreground) 73%, color-mix(in oklab, var(--foreground) 65%, transparent) 81%, transparent 90%); mask-composite: intersect; }
 .photo-niche-original > .photo-niche-source { visibility: hidden; }
 /* Keep atmospheric light above the bottle rather than washing out its label. */
 .photo-niche-original > .photo-niche-light { opacity: calc(var(--beam-opacity) * 0.12); }
@@ -234,7 +234,7 @@
 .phase-detail .camera-world { will-change: auto !important; }
 .phase-detail .collection-niche:not(.selected-niche) { visibility: hidden; }
 .phase-detail .selected-niche .photo-niche { --photo-brightness: 1; --beam-opacity: 0.42; --pool-opacity: 0.4; }
-.photo-floor-mirror { position: absolute; top: calc(100% - 19.5cqw); left: 0; width: 100%; height: 84cqw; overflow: hidden; pointer-events: none; mask-composite: intersect; mask-image: linear-gradient(90deg, transparent, var(--foreground) 14%, var(--foreground) 86%, transparent), linear-gradient(to bottom, var(--reflection-ink), color-mix(in oklab, var(--reflection-ink) 70%, transparent) 35%, color-mix(in oklab, var(--reflection-ink) 25%, transparent) 72%, transparent); }
+.photo-floor-mirror { position: absolute; top: calc(100% - 19.5cqw); left: 0; width: 100%; height: 84cqw; overflow: hidden; pointer-events: none; mask-composite: intersect; mask-image: linear-gradient(90deg, transparent, var(--foreground) 14%, var(--foreground) 86%, transparent), linear-gradient(to bottom, transparent, var(--reflection-ink) 9%, color-mix(in oklab, var(--reflection-ink) 70%, transparent) 35%, color-mix(in oklab, var(--reflection-ink) 25%, transparent) 72%, transparent); }
 .photo-floor-mirrored-layers { position: absolute; width: 100%; height: 150cqw; top: -19.5cqw; transform: scaleY(-1); transform-origin: center; filter: blur(0.5px); }
 /* Reflection already has a static softening pass; avoid backdrop sampling. */
 .photo-contact-shadow { position: absolute; top: calc(100% - 19.5cqw); left: 25%; width: 50%; height: 2%; background: radial-gradient(ellipse, var(--contact-shadow), transparent 75%); pointer-events: none; }
@@ -352,9 +352,9 @@ body:has(.detail-room) .boutique-header { position: fixed; }
   .niche-gallery { left: 5%; right: 5%; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0 6px; overflow: visible; }
   .collection-niche { width: 100%; grid-column: span 2; min-width: 0; min-height: 44px; }
   .collection-niche:nth-child(-n+2) { grid-column: span 3; padding-bottom: 12px; }
-  .photo-floor-mirror { transition: opacity 450ms ease; }
-  .phase-collection .collection-niche:nth-child(-n+2) .photo-floor-mirror,
-  .phase-collection .collection-niche:nth-child(-n+2) .photo-contact-shadow { opacity: 0; }
+  /* Apply through every camera phase; a phase-scoped rule made mirrors pop in. */
+  .collection-niche:nth-child(-n+2) .photo-floor-mirror,
+  .collection-niche:nth-child(-n+2) .photo-contact-shadow { display: none; }
   /* Touch/focus must never expose homepage captions on mobile. */
   .collection-niche .niche-caption { display: none; }
   .niche-image-box { width: min(100%, 110px); height: var(--display-height); min-height: 0; }
