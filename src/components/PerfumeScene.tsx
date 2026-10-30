@@ -168,6 +168,17 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
 
   return (
     <section ref={room} id="collection" className={`gallery-room phase-${phase}`}>
+      <div className="gallery-signature" aria-hidden="true">
+        <span className="signature-label">After dark</span>
+        <span className="signature-rule" />
+        <svg className="signature-seal" viewBox="0 0 48 48" fill="none">
+          <ellipse cx="24" cy="24" rx="15" ry="20" />
+          <path d="M24 9C24 20 20 24 11 24C20 24 24 28 24 39C24 28 28 24 37 24C28 24 24 20 24 9Z" />
+          <circle cx="24" cy="24" r="3" />
+        </svg>
+        <span className="signature-rule" />
+        <span className="signature-label">Five expressions</span>
+      </div>
       <div className="camera-viewport"><div ref={world} className="camera-world">
       <RoomBackground />
       <div className="collection-content" inert={phase !== "collection"}>
