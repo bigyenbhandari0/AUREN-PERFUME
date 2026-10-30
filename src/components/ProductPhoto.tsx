@@ -27,6 +27,8 @@ export function ProductPhoto({ src, alt, glow, className = "", imgClassName = ""
       style={{ "--glow": glow } as CSSProperties}
     >
       <div className="photo-niche-original"><PhotoLayers src={src} alt={alt} imgClassName={imgClassName} loading={loading} /></div>
+      <div className="photo-overhead-light photo-niche-light" aria-hidden />
+      <div className="photo-overhead-source photo-niche-source" aria-hidden />
       <div className="photo-floor-mirror" aria-hidden="true"><div className="photo-floor-mirrored-layers"><PhotoLayers src={src} alt="" imgClassName={imgClassName} loading={loading} /></div></div>
       <div className="photo-contact-shadow" aria-hidden />
     </div>

@@ -200,6 +200,8 @@
   --contact-shadow: oklch(0.04 0 0 / 75%);
 }
 .photo-niche-original { position: absolute; bottom: 0; left: 0; width: 100%; height: 150cqw; overflow: hidden; clip-path: inset(0 0 13%); }
+.photo-niche-original > .photo-niche-source { visibility: hidden; }
+.photo-overhead-light { mask-image: linear-gradient(to bottom, var(--foreground), var(--foreground) 35%, transparent 85%); }
 .photo-floor-mirror { position: absolute; top: calc(100% - 19.5cqw); left: 0; width: 100%; height: 37.5cqw; overflow: hidden; pointer-events: none; mask-image: linear-gradient(to bottom, var(--reflection-ink), color-mix(in oklab, var(--reflection-ink) 35%, transparent) 55%, transparent); }
 .photo-floor-mirrored-layers { position: absolute; width: 100%; height: 150cqw; top: -19.5cqw; transform: scaleY(-1); transform-origin: center; filter: blur(0.5px); }
 .photo-floor-mirror::after { content: ""; position: absolute; inset: 35% 0 0; backdrop-filter: blur(2px); mask-image: linear-gradient(to bottom, transparent, var(--foreground)); }
