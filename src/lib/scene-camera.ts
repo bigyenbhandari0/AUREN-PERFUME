@@ -1,5 +1,5 @@
 export type SceneRect = { left: number; top: number; width: number; height: number };
-export const CAMERA_DURATION = 1050;
+export const CAMERA_DURATION = 900;
 
 /** Uniform camera movement preserves the complete photographic composition. */
 export function cameraTransform(source: SceneRect, target: SceneRect) {

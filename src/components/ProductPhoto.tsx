@@ -12,7 +12,7 @@ type Props = {
 
 function PhotoLayers({ src, alt, imgClassName, loading }: Pick<Props, "src" | "alt" | "imgClassName" | "loading">) {
   return <>
-    <img src={src} alt={alt} loading={loading} className={`photo-niche-img ${imgClassName ?? ""}`} />
+    <img src={src} alt={alt} loading={loading} decoding="async" draggable={false} className={`photo-niche-img ${imgClassName ?? ""}`} />
     <div className="photo-niche-light" aria-hidden />
     <div className="photo-niche-source" aria-hidden />
     <div className="photo-niche-pool" aria-hidden />

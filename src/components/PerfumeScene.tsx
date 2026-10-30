@@ -35,8 +35,6 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
 
   useEffect(() => {
     mounted.current = true;
-    // Decode every original before navigation; mirrored layers share the same URLs.
-    Object.values(perfumeImages).forEach((src) => { const image = new Image(); image.src = src; image.decode().catch(() => {}); });
     return () => { mounted.current = false; animation.current?.cancel(); };
   }, []);
 
@@ -48,7 +46,7 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
     if (busy.current || phase !== "collection" || !element || !perfume || !plane || !scene) return;
     busy.current = true;
     const image = element.querySelector("img");
-    try { await image?.decode(); } catch { /* The loaded image can still be displayed. */ }
+    try { if (image && (!image.complete || !image.naturalWidth)) await image.decode(); } catch { /* The loaded image can still be displayed. */ }
     if (!mounted.current) return;
     const bounds = scene.getBoundingClientRect();
     baseRects.current = sources.current.map((source) => {

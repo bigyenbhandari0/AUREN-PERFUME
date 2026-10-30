@@ -148,9 +148,9 @@
   object-fit: contain;
   object-position: center bottom;
   mask-image: linear-gradient(to bottom, transparent, var(--foreground) 10%, var(--foreground) 92%, transparent);
-  filter: brightness(var(--photo-brightness)) contrast(1.06);
+  opacity: min(1, var(--photo-brightness));
   image-rendering: auto;
-  transition: filter 550ms ease-in-out;
+  transition: opacity 450ms ease-in-out;
 }
 
 /* Softly feathered light layer, anchored overhead; center nudged by --lx/--ly. */
@@ -167,7 +167,7 @@
     conic-gradient(from 151deg at 50% 2%, transparent 0deg, color-mix(in oklab, var(--light) 12%, transparent) 12deg, color-mix(in oklab, var(--light) 32%, transparent) 29deg, color-mix(in oklab, var(--light) 12%, transparent) 46deg, transparent 58deg);
   mask-image: linear-gradient(to bottom, transparent, var(--foreground) 8%, var(--foreground) 45%, transparent 90%), radial-gradient(ellipse 50% 70% at 50% 25%, var(--foreground) 20%, transparent 100%);
   mask-composite: intersect;
-  filter: blur(10px);
+  /* Soft gradients supply the feathering without a live blur surface. */
 }
 
 /* Faint light pool near the photographed shelf at the bottle base. */
@@ -232,10 +232,11 @@
   mask-composite: intersect;
 }
 .phase-detail .camera-world { will-change: auto !important; }
+.phase-detail .collection-niche:not(.selected-niche) { visibility: hidden; }
 .phase-detail .selected-niche .photo-niche { --photo-brightness: 1; --beam-opacity: 0.42; --pool-opacity: 0.4; }
 .photo-floor-mirror { position: absolute; top: calc(100% - 19.5cqw); left: 0; width: 100%; height: 84cqw; overflow: hidden; pointer-events: none; mask-composite: intersect; mask-image: linear-gradient(90deg, transparent, var(--foreground) 14%, var(--foreground) 86%, transparent), linear-gradient(to bottom, var(--reflection-ink), color-mix(in oklab, var(--reflection-ink) 70%, transparent) 35%, color-mix(in oklab, var(--reflection-ink) 25%, transparent) 72%, transparent); }
 .photo-floor-mirrored-layers { position: absolute; width: 100%; height: 150cqw; top: -19.5cqw; transform: scaleY(-1); transform-origin: center; filter: blur(0.5px); }
-.photo-floor-mirror::after { content: ""; position: absolute; inset: 35% 0 0; backdrop-filter: blur(2px); mask-image: linear-gradient(to bottom, transparent, var(--foreground)); }
+/* Reflection already has a static softening pass; avoid backdrop sampling. */
 .photo-contact-shadow { position: absolute; top: calc(100% - 19.5cqw); left: 25%; width: 50%; height: 2%; background: radial-gradient(ellipse, var(--contact-shadow), transparent 75%); pointer-events: none; }
 .photo-niche-source {
   opacity: var(--beam-opacity); transition: opacity 550ms ease-in-out;
@@ -326,8 +327,8 @@ body:has(.detail-room) .boutique-header { position: fixed; }
 .niche-hidden { visibility: hidden; }
 /* One continuous stagger survives the opening -> detail phase change. */
 .detail-room:not(.phase-closing) .detail-information > * {
-  animation: detail-text-reveal 700ms var(--ease-lux) both;
-  animation-delay: calc(700ms + var(--text-order, 0) * 85ms);
+  animation: detail-text-reveal 550ms var(--ease-lux) both;
+  animation-delay: calc(550ms + var(--text-order, 0) * 65ms);
 }
 .detail-information > :nth-child(1) { --text-order: 0; }
 .detail-information > :nth-child(2) { --text-order: 1; }
@@ -339,8 +340,8 @@ body:has(.detail-room) .boutique-header { position: fixed; }
 .detail-information > :nth-child(8) { --text-order: 7; }
 .detail-information > :nth-child(9) { --text-order: 8; }
 @keyframes detail-text-reveal {
-  from { opacity: 0; transform: translateY(16px); clip-path: inset(0 0 100% 0); }
-  to { opacity: 1; transform: translateY(0); clip-path: inset(-4px -4px -4px -4px); }
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 .phase-closing .detail-information { opacity: 0; transition: opacity 200ms; }
 @keyframes detail-enter { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
