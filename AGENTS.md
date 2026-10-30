@@ -8,3 +8,6 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep the boutique's collection/detail state and measured native Web Animations transitions in PerfumeScene; one guarded phase model prevents competing transitions without another router.
+- ProductPhoto owns anchored photographic spotlight layers; keep photograph proportions intact and use the existing asset pointers.

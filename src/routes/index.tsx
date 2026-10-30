@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { ProductPhoto } from "@/components/ProductPhoto";
-import { perfumes, formatNPR, type Perfume, type Size } from "@/lib/perfumes";
+import { useEffect, useRef, useState } from "react";
+import { PerfumeScene } from "@/components/PerfumeScene";
+import { Button } from "@/components/ui/button";
+import { perfumes, formatNPR } from "@/lib/perfumes";
 import { perfumeImages, storyBackground } from "@/lib/perfume-assets";
 import { useCart } from "@/lib/cart";
 
@@ -19,35 +20,20 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const glowStyle = (p: Perfume) => ({ "--glow": p.glow }) as CSSProperties;
-
 function Index() {
   const cart = useCart();
   const [bagOpen, setBagOpen] = useState(false);
-  const [active, setActive] = useState<number | null>(null);
+  const [homeSignal, setHomeSignal] = useState(0);
 
   return (
     <div className="stone min-h-screen text-foreground">
-      <Header count={cart.count} onBag={() => setBagOpen(true)} onHome={() => setActive(null)} />
+      <Header count={cart.count} onBag={() => setBagOpen(true)} onHome={() => setHomeSignal((value) => value + 1)} />
       <main>
-        <Gallery onSelect={setActive} />
+        <PerfumeScene homeSignal={homeSignal} onAdd={(id, size) => { cart.add(id, size); setBagOpen(true); }} />
         <Story />
       </main>
       <Footer />
 
-      {active !== null && (
-        <Detail
-          index={active}
-          onChange={setActive}
-          onClose={() => setActive(null)}
-          onAdd={(id, size) => {
-            cart.add(id, size);
-            setBagOpen(true);
-          }}
-          bagCount={cart.count}
-          onBag={() => setBagOpen(true)}
-        />
-      )}
       <Bag open={bagOpen} onClose={() => setBagOpen(false)} cart={cart} />
     </div>
   );
@@ -55,7 +41,7 @@ function Index() {
 
 function Header({ count, onBag, onHome }: { count: number; onBag: () => void; onHome: () => void }) {
   return (
-    <header className="relative z-30 mx-auto flex max-w-[1600px] items-center justify-between gap-4 border-b border-border px-5 py-5 md:px-10">
+    <header className="boutique-header">
       <a href="#top" onClick={onHome} className="min-w-0 truncate font-serif text-2xl tracking-wide">
         Your product
       </a>
@@ -70,98 +56,20 @@ function Header({ count, onBag, onHome }: { count: number; onBag: () => void; on
 
 function BagButton({ count, onClick }: { count: number; onClick: () => void }) {
   return (
-    <button
+    <Button variant="ghost"
       onClick={onClick}
       className="flex min-h-11 items-center gap-2 border border-border px-4 text-xs uppercase tracking-[0.2em] text-foreground transition-colors hover:bg-accent focus-visible:bg-accent"
       aria-label={`Open bag, ${count} items`}
     >
       Bag
       <span className="grid h-5 min-w-5 place-items-center rounded-full bg-primary px-1 text-[10px] text-primary-foreground">{count}</span>
-    </button>
-  );
-}
-
-function Gallery({ onSelect }: { onSelect: (i: number) => void }) {
-  const scroller = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState(0);
-  const onScroll = () => {
-    const el = scroller.current;
-    if (!el) return;
-    const w = (el.firstElementChild as HTMLElement)?.offsetWidth ?? 1;
-    setPos(Math.round(el.scrollLeft / (w + 12)));
-  };
-
-  return (
-    <section id="collection" className="pt-10 md:pt-14">
-      <div className="mx-auto max-w-[1600px] px-5 md:px-10">
-        <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">A presence that lingers.</p>
-        <h1 className="mt-4 font-serif text-5xl leading-none md:text-7xl">
-          The <em className="italic text-primary">after-dark</em> collection
-        </h1>
-        <p className="mt-4 text-muted-foreground">Five expressions. One lasting impression.</p>
-      </div>
-
-      {/* desktop: five adjacent panels with fine dividers */}
-      <div className="mx-auto mt-12 hidden max-w-[1600px] grid-cols-5 gap-px bg-border px-0 md:grid md:border-y md:border-border">
-        {perfumes.map((p, i) => (
-          <NicheCard key={p.id} p={p} onClick={() => onSelect(i)} />
-        ))}
-      </div>
-
-      {/* mobile: swipeable snap panels with a glimpse of the next */}
-      <div className="mt-10 md:hidden">
-        <div
-          ref={scroller}
-          onScroll={onScroll}
-          className="no-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2"
-        >
-          {perfumes.map((p, i) => (
-            <NicheCard key={p.id} p={p} onClick={() => onSelect(i)} className="w-[78vw] shrink-0 snap-center" />
-          ))}
-        </div>
-        <div className="mt-5 flex items-center justify-between px-5">
-          <div className="flex gap-2" aria-hidden>
-            {perfumes.map((p, i) => (
-              <span
-                key={p.id}
-                className={`h-px transition-all duration-500 ${i === pos ? "w-8 bg-foreground" : "w-4 bg-muted-foreground/50"}`}
-              />
-            ))}
-          </div>
-          <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Swipe to explore →</span>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function NicheCard({ p, onClick, className = "" }: { p: Perfume; onClick: () => void; className?: string }) {
-  return (
-    <button
-      onClick={onClick}
-      style={glowStyle(p)}
-      className={`group flex flex-col bg-background text-left transition-colors focus-visible:bg-accent ${className}`}
-      aria-label={`Discover ${p.name}`}
-    >
-      <ProductPhoto
-        src={perfumeImages[p.id]!}
-        alt={`${p.name} eau de parfum bottle in a lit stone niche`}
-        glow={p.glow}
-        className="aspect-[2/3] w-full"
-      />
-      <div className="flex items-center justify-between gap-3 border-t border-border px-4 py-4">
-        <span className="font-serif text-xl">{p.name}</span>
-        <span className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground transition-colors group-hover:text-foreground group-focus-visible:text-foreground">
-          Discover ↗
-        </span>
-      </div>
-    </button>
+    </Button>
   );
 }
 
 function Story() {
   return (
-    <section id="story" className="relative mt-24 overflow-hidden border-t border-border">
+    <section id="story" className="relative overflow-hidden border-t border-border">
       <img
         src={storyBackground}
         alt=""
@@ -215,98 +123,10 @@ function Footer() {
       <div className="mx-auto mt-10 max-w-7xl border-t border-border pt-10 pb-4 text-center">
         <p ref={creditRef} className="auren-credit text-sm">
           <span className="text-muted-foreground">Designed by </span>
-          <span className="auren-name font-medium uppercase tracking-[0.35em] text-primary">Auren</span>
+          <span className="auren-name font-medium uppercase tracking-[0.35em] text-primary">AUREN</span>
         </p>
       </div>
     </footer>
-  );
-}
-
-function Detail({
-  index, onChange, onClose, onAdd, bagCount, onBag,
-}: {
-  index: number; onChange: (i: number) => void; onClose: () => void;
-  onAdd: (id: string, s: Size) => void; bagCount: number; onBag: () => void;
-}) {
-  const p = perfumes[index]!;
-  const [size, setSize] = useState<Size>("50");
-  const n = perfumes.length;
-  const prev = () => onChange((index - 1 + n) % n);
-  const next = () => onChange((index + 1) % n);
-
-  useEffect(() => {
-    const k = (e: KeyboardEvent) => {
-      if (document.querySelector("[data-bag-open]")) return;
-      if (e.key === "Escape") onClose();
-      if (e.key === "ArrowLeft") prev();
-      if (e.key === "ArrowRight") next();
-    };
-    window.addEventListener("keydown", k);
-    document.body.style.overflow = "hidden";
-    return () => {
-      window.removeEventListener("keydown", k);
-      document.body.style.overflow = "";
-    };
-  });
-
-  return (
-    <div role="dialog" aria-modal="true" aria-label={p.name} className="stone fade-up fixed inset-0 z-40 overflow-y-auto" style={glowStyle(p)}>
-      <div className="flex items-center justify-between border-b border-border px-5 py-5 md:px-10">
-        <span className="font-serif text-2xl">Your product</span>
-        <BagButton count={bagCount} onClick={onBag} />
-      </div>
-      <div className="mx-auto grid max-w-[1600px] gap-8 px-5 pb-10 pt-8 md:grid-cols-2 md:items-center md:gap-16 md:px-10">
-        <div key={p.id} className="fade-up order-2 md:order-1">
-          <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
-            {String(index + 1).padStart(2, "0")} / {String(n).padStart(2, "0")} — {p.character}
-          </p>
-          <h2 className="mt-4 font-serif text-5xl md:text-7xl">{p.name}</h2>
-          <p className="mt-5 max-w-md leading-relaxed text-muted-foreground">{p.description}</p>
-          <dl className="mt-8 max-w-md divide-y divide-border border-y border-border text-sm">
-            {["Top", "Heart", "Base"].map((l, i) => (
-              <div key={l} className="flex justify-between py-3">
-                <dt className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{l}</dt>
-                <dd>{p.notes[i]}</dd>
-              </div>
-            ))}
-          </dl>
-          <div className="mt-8 flex items-center gap-3" role="radiogroup" aria-label="Size">
-            {(["50", "100"] as Size[]).map((s) => (
-              <button
-                key={s} role="radio" aria-checked={size === s} onClick={() => setSize(s)}
-                className={`min-h-11 border px-5 text-sm transition-colors ${size === s ? "border-primary bg-primary text-primary-foreground" : "border-border hover:bg-accent"}`}
-              >
-                {s} ml
-              </button>
-            ))}
-            <span className="ml-auto font-serif text-2xl md:ml-4">{formatNPR(p.prices[size])}</span>
-          </div>
-          <button
-            onClick={() => onAdd(p.id, size)}
-            className="mt-6 min-h-12 w-full max-w-md bg-primary text-sm uppercase tracking-[0.25em] text-primary-foreground transition-opacity hover:opacity-90"
-          >
-            Add to bag
-          </button>
-          <div className="mt-10 flex max-w-md items-center justify-between text-xs uppercase tracking-[0.2em]">
-            <button onClick={onClose} className="min-h-11 text-muted-foreground transition-colors hover:text-foreground">← Back to collection</button>
-            <div className="flex gap-2">
-              <button onClick={prev} aria-label="Previous perfume" className="grid h-11 w-11 place-items-center border border-border transition-colors hover:bg-accent">‹</button>
-              <button onClick={next} aria-label="Next perfume" className="grid h-11 w-11 place-items-center border border-border transition-colors hover:bg-accent">›</button>
-            </div>
-          </div>
-        </div>
-        <div className="order-1 md:order-2">
-          <ProductPhoto
-            key={p.id}
-            src={perfumeImages[p.id]!}
-            alt={`${p.name} eau de parfum bottle in a lit stone niche`}
-            glow={p.glow}
-            loading="eager"
-            className="fade-up mx-auto aspect-[2/3] w-full max-w-[440px] border border-border"
-          />
-        </div>
-      </div>
-    </div>
   );
 }
 
@@ -330,7 +150,7 @@ function Bag({ open, onClose, cart }: { open: boolean; onClose: () => void; cart
       >
         <div className="flex items-center justify-between border-b border-border p-6">
           <h2 className="font-serif text-3xl">Your bag</h2>
-          <button ref={closeRef} onClick={onClose} tabIndex={open ? 0 : -1} className="min-h-11 text-xs uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:text-foreground">Close</button>
+          <Button variant="ghost" ref={closeRef} onClick={onClose} tabIndex={open ? 0 : -1} className="min-h-11 text-xs uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:text-foreground">Close</Button>
         </div>
         <div className="flex-1 overflow-y-auto p-6">
           {cart.items.length === 0 ? (
@@ -341,11 +161,12 @@ function Bag({ open, onClose, cart }: { open: boolean; onClose: () => void; cart
           ) : (
             <ul className="divide-y divide-border">
               {cart.items.map((it) => {
-                const p = perfumes.find((x) => x.id === it.id)!;
+                const p = perfumes.find((x) => x.id === it.id);
+                if (!p) return null;
                 return (
                   <li key={it.id + it.size} className="flex gap-4 py-5">
                     <img
-                      src={perfumeImages[p.id]!}
+                      src={perfumeImages[p.id] ?? ""}
                       alt=""
                       aria-hidden
                       className="h-24 w-16 shrink-0 border border-border object-cover"
@@ -357,10 +178,10 @@ function Bag({ open, onClose, cart }: { open: boolean; onClose: () => void; cart
                       </div>
                       <p className="text-xs text-muted-foreground">{it.size} ml · {formatNPR(p.prices[it.size])}</p>
                       <div className="mt-3 flex items-center gap-3">
-                        <button tabIndex={open ? 0 : -1} aria-label="Decrease quantity" onClick={() => cart.setQty(it.id, it.size, it.qty - 1)} className="grid h-9 w-9 place-items-center border border-border transition-colors hover:bg-accent">−</button>
+                        <Button variant="ghost" tabIndex={open ? 0 : -1} aria-label="Decrease quantity" onClick={() => cart.setQty(it.id, it.size, it.qty - 1)} className="grid h-9 w-9 place-items-center border border-border transition-colors hover:bg-accent">−</Button>
                         <span className="w-4 text-center text-sm">{it.qty}</span>
-                        <button tabIndex={open ? 0 : -1} aria-label="Increase quantity" onClick={() => cart.setQty(it.id, it.size, it.qty + 1)} className="grid h-9 w-9 place-items-center border border-border transition-colors hover:bg-accent">+</button>
-                        <button tabIndex={open ? 0 : -1} onClick={() => cart.remove(it.id, it.size)} className="ml-auto text-xs uppercase tracking-[0.15em] text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline">Remove</button>
+                        <Button variant="ghost" tabIndex={open ? 0 : -1} aria-label="Increase quantity" onClick={() => cart.setQty(it.id, it.size, it.qty + 1)} className="grid h-9 w-9 place-items-center border border-border transition-colors hover:bg-accent">+</Button>
+                        <Button variant="ghost" tabIndex={open ? 0 : -1} onClick={() => cart.remove(it.id, it.size)} className="ml-auto text-xs uppercase tracking-[0.15em] text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline">Remove</Button>
                       </div>
                     </div>
                   </li>
@@ -375,9 +196,9 @@ function Bag({ open, onClose, cart }: { open: boolean; onClose: () => void; cart
               <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Subtotal</span>
               <span className="font-serif text-2xl">{formatNPR(cart.subtotal)}</span>
             </div>
-            <button tabIndex={open ? 0 : -1} onClick={() => setNotice(true)} className="mt-5 min-h-12 w-full bg-primary text-sm uppercase tracking-[0.25em] text-primary-foreground transition-opacity hover:opacity-90">
+            <Button variant="ghost" tabIndex={open ? 0 : -1} onClick={() => setNotice(true)} className="mt-5 min-h-12 w-full bg-primary text-sm uppercase tracking-[0.25em] text-primary-foreground transition-opacity hover:opacity-90">
               Checkout
-            </button>
+            </Button>
             {notice && (
               <p role="status" className="mt-4 border border-border p-4 text-sm leading-relaxed text-muted-foreground">
                 <strong className="text-foreground">Demo store.</strong> Ordering and payments are not connected, so no order has been placed and nothing has been charged.
