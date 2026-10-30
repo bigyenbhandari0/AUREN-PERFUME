@@ -568,3 +568,22 @@ html { scroll-behavior: smooth; }
   .story-motion-ready .story-reveal { opacity: 1; transform: none; }
   .story-reveal.is-revealed { animation: none; }
 }
+
+/* Ember Veil pilot: the original cap travels within the persistent photo scene. */
+.photo-cap {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: contain; object-position: center bottom; pointer-events: none;
+  clip-path: polygon(39.35% 23.2%, 39.8% 22.6%, 42% 22.1%, 46% 21.7%, 50% 21.6%, 54% 21.7%, 58% 22.1%, 60.6% 22.6%, 61.1% 23.2%, 61.1% 35.1%, 59.4% 35.6%, 55% 35.8%, 45% 35.8%, 40.8% 35.6%, 39.35% 35.1%);
+  transform: translateY(0);
+  transition: transform 450ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.phase-opening .selected-niche .photo-cap,
+.phase-detail .selected-niche .photo-cap {
+  transform: translateY(-18cqw);
+  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1) 200ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  .photo-cap { transition: none !important; }
+  .phase-opening .selected-niche .photo-cap,
+  .phase-detail .selected-niche .photo-cap { transform: none; }
+}
