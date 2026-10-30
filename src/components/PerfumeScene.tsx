@@ -31,6 +31,7 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
   const mounted = useRef(true);
   const animation = useRef<Animation | null>(null);
   const p = perfumes[index];
+  const detailOpen = phase !== "collection";
 
   useEffect(() => {
     mounted.current = true;
@@ -68,12 +69,16 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
     busy.current = true;
     const panel = destination.current.closest("[role=dialog]");
     if (panel instanceof HTMLElement) panel.scrollTop = 0;
+    if (world.current) world.current.style.translate = "";
     setPhase("closing");
   };
 
   const navigate = (direction: number) => {
     if (busy.current || phase !== "detail") return;
     busy.current = true;
+    const panel = destination.current?.closest("[role=dialog]");
+    if (panel instanceof HTMLElement) panel.scrollTop = 0;
+    if (world.current) world.current.style.translate = "";
     setIndex((current) => (current + direction + perfumes.length) % perfumes.length);
     setSize("50");
     setPhase("opening");
@@ -83,10 +88,26 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
     if (homeSignal > 0) close();
   }, [homeSignal]);
 
+  useLayoutEffect(() => {
+    if (!detailOpen) return;
+    const body = document.body;
+    const root = document.documentElement;
+    const y = window.scrollY;
+    const old = { position: body.style.position, top: body.style.top, width: body.style.width, overflow: body.style.overflow, rootOverflow: root.style.overflow };
+    body.style.position = "fixed";
+    body.style.top = `-${y}px`;
+    body.style.width = "100%";
+    body.style.overflow = "hidden";
+    root.style.overflow = "hidden";
+    return () => {
+      Object.assign(body.style, { position: old.position, top: old.top, width: old.width, overflow: old.overflow });
+      root.style.overflow = old.rootOverflow;
+      window.scrollTo({ top: y, behavior: "instant" });
+    };
+  }, [detailOpen]);
+
   useEffect(() => {
     if (phase === "collection") return;
-    const old = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
     const onKey = (event: KeyboardEvent) => {
       if (document.querySelector("[data-bag-open]")) return;
       if (event.key === "Escape") close();
@@ -102,7 +123,7 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
       }
     };
     window.addEventListener("keydown", onKey);
-    return () => { document.body.style.overflow = old; window.removeEventListener("keydown", onKey); };
+    return () => window.removeEventListener("keydown", onKey);
   }, [phase, index]);
 
   // Reset the fixed camera and its dimensions in the same commit as the collection.
@@ -110,6 +131,7 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
   useLayoutEffect(() => {
     if (phase !== "collection" || !world.current) return;
     world.current.style.transform = "";
+    world.current.style.translate = "";
     world.current.style.width = "";
     world.current.style.height = "";
   }, [phase]);
@@ -182,7 +204,10 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
         </div>
       </div>
 
-      {phase !== "collection" && <div className={`detail-room phase-${phase}`} role="dialog" aria-modal="true" aria-label={p.name}>
+      {phase !== "collection" && <div className={`detail-room phase-${phase}`} role="dialog" aria-modal="true" aria-label={p.name}
+        onScroll={(event) => {
+          if (phase === "detail" && world.current) world.current.style.translate = `0px ${-event.currentTarget.scrollTop}px`;
+        }}>
         <div className="detail-layout">
           <div className="detail-information" inert={phase !== "detail"}>
             <p className="detail-edition">The after-dark collection</p>

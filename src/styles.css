@@ -261,7 +261,7 @@ body:has(.detail-room) .boutique-header { position: fixed; }
 }
 .camera-viewport { position: absolute; inset: 0; overflow: hidden; }
 .camera-world { position: absolute; inset: 0; transform-origin: 0 0; isolation: isolate; }
-.gallery-room:not(.phase-collection) .camera-viewport { position: fixed; z-index: 39; }
+.gallery-room:not(.phase-collection) .camera-viewport { position: fixed; z-index: 39; background: var(--scene-dark); pointer-events: none; overscroll-behavior: none; }
 .gallery-room:not(.phase-collection) { z-index: 40; }
 .gallery-room:not(.phase-collection) .camera-world { inset: auto; top: 0; left: 0; will-change: transform; }
 .collection-editorial { position: absolute; inset: 0; pointer-events: none; }
@@ -300,7 +300,7 @@ body:has(.detail-room) .boutique-header { position: fixed; }
 .gallery-room:not(.phase-collection) .collection-niche .niche-caption { opacity: 0; transform: translateY(6px); transition: none; }
 .phase-opening .collection-lockup, .phase-detail .collection-lockup { opacity: 0; transition: opacity 250ms; }
 .phase-closing .collection-lockup { opacity: 1; transition: opacity 300ms 550ms; }
-.detail-room { position: fixed; inset: 0; z-index: 40; isolation: isolate; overflow-y: auto; background: transparent; pointer-events: none; }
+.detail-room { position: fixed; inset: 0; z-index: 40; isolation: isolate; overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; background: transparent; pointer-events: auto; }
 .detail-information { pointer-events: auto; }
 .detail-room.phase-opening, .detail-room.phase-closing { background: transparent; }
 .detail-room.phase-opening > .room-background, .detail-room.phase-closing > .room-background { opacity: 0; }
@@ -330,20 +330,22 @@ body:has(.detail-room) .boutique-header { position: fixed; }
 
 @media (max-width: 767px) {
   .boutique-header { padding: 12px 20px; }
-  .gallery-room { --gallery-top: 100px; --display-height: max(400px, 58svh, 114vw); --floor-tail: 49vw; }
-  .niche-gallery { left: 0; right: 0; padding-inline: 12%; gap: 24px; justify-content: flex-start; overflow-x: auto; scroll-snap-type: x mandatory; }
-  .collection-niche { width: 76vw; flex-shrink: 0; scroll-snap-align: center; }
-  .niche-image-box { min-height: 400px; }
-  .niche-caption { font-size: 23px; }
+  .gallery-room { --gallery-top: 88px; --display-height: 190px; --floor-tail: 72px; height: calc(var(--gallery-top) + 2 * (var(--display-height) + var(--floor-tail)) + 140px); }
+  .niche-gallery { left: 5%; right: 5%; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0 6px; overflow: visible; }
+  .collection-niche { width: 100%; grid-column: span 2; min-width: 0; min-height: 44px; }
+  .collection-niche:nth-child(-n+2) { grid-column: span 3; }
+  .niche-image-box { width: min(100%, 110px); height: var(--display-height); min-height: 0; }
+  .niche-caption { top: 0; font-size: clamp(12px, 3.4vw, 16px); gap: 4px; }
+  .niche-discover { font-size: 6px; letter-spacing: 0.1em; }
   .phase-detail .camera-viewport { pointer-events: none; }
   .detail-room.phase-detail { pointer-events: auto; }
-  .collection-lockup { left: 6%; right: 6%; top: calc(var(--gallery-top) + var(--display-height) + var(--floor-tail) + 24px); }
+  .collection-lockup { left: 6%; right: 6%; top: calc(var(--gallery-top) + 2 * (var(--display-height) + var(--floor-tail)) + 12px); }
   .collection-lockup h1 { font-size: 30px; }
-  .gallery-position { position: absolute; top: calc(var(--gallery-top) + var(--display-height) + var(--floor-tail) + 6px); left: 6%; display: flex; gap: 7px; }
+  .gallery-position { display: none !important; position: absolute; top: calc(var(--gallery-top) + var(--display-height) + var(--floor-tail) + 6px); left: 6%; display: flex; gap: 7px; }
   .gallery-position span { width: 14px; height: 1px; background: var(--muted-foreground); }
   .gallery-position .current { width: 28px; background: var(--primary); }
-  .detail-layout { display: flex; flex-direction: column; padding: 76px 6% 40px; gap: 20px; }
-  .detail-niche { order: -1; width: 86%; height: 58svh; min-height: 380px; }
+  .detail-layout { display: flex; flex-direction: column; padding: 76px 6% 40px; gap: 80px; }
+  .detail-niche { order: -1; width: 86%; height: min(56svh, 480px); min-height: 280px; max-width: 300px; margin-inline: auto; }
   .detail-information { width: 100%; padding: 10px 0; }
   .detail-information h2 { font-size: 38px; }
   .detail-description { font-size: 14px; max-width: none; }
