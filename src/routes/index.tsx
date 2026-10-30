@@ -166,7 +166,7 @@ function Detail({
   index: number; onChange: (i: number) => void; onClose: () => void;
   onAdd: (id: string, s: Size) => void; bagCount: number; onBag: () => void;
 }) {
-  const p = perfumes[index];
+  const p = perfumes[index]!;
   const [size, setSize] = useState<Size>("50");
   const n = perfumes.length;
   const prev = () => onChange((index - 1 + n) % n);
