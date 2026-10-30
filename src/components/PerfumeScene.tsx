@@ -185,10 +185,12 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
       {phase !== "collection" && <div className={`detail-room phase-${phase}`} role="dialog" aria-modal="true" aria-label={p.name}>
         <div className="detail-layout">
           <div className="detail-information" inert={phase !== "detail"}>
+            <p className="detail-edition">The after-dark collection</p>
             <p className="detail-eyebrow">{String(index + 1).padStart(2, "0")} / 05 — {p.character}</p>
             <h2>{p.name}</h2>
             <p className="detail-description">{p.description}</p>
             <dl className="detail-notes">{["Top", "Heart", "Base"].map((label, i) => <div key={label}><dt>{label}</dt><dd>{p.notes[i]}</dd></div>)}</dl>
+            <p className="detail-size-label">Select volume</p>
             <div className="detail-purchase-row">
               <div className="flex shrink-0 gap-2" role="radiogroup" aria-label="Size">
                 {(["50", "100"] as Size[]).map((value) => <Button key={value} variant={size === value ? "default" : "outline"} role="radio" aria-checked={size === value} onClick={() => setSize(value)} className="rounded-none px-3">{value} ml</Button>)}

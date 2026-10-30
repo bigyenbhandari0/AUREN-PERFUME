@@ -133,7 +133,7 @@
   overflow: visible;
   width: 100%;
   height: 100%;
-  --photo-brightness: 0.82;
+  --photo-brightness: 0.96;
   --beam-opacity: 0.16;
   --pool-opacity: 0.14;
   --beam-spread: 0.72;
@@ -148,7 +148,8 @@
   object-fit: contain;
   object-position: center bottom;
   mask-image: linear-gradient(to bottom, transparent, var(--foreground) 10%, var(--foreground) 92%, transparent);
-  filter: brightness(var(--photo-brightness)) contrast(1.02);
+  filter: brightness(var(--photo-brightness)) contrast(1.06);
+  image-rendering: auto;
   transition: filter 550ms ease-in-out;
 }
 
@@ -164,7 +165,8 @@
   background:
     radial-gradient(ellipse 65% 60% at 50% 38%, color-mix(in oklab, var(--light) 22%, transparent), transparent 85%),
     conic-gradient(from 151deg at 50% 2%, transparent 0deg, color-mix(in oklab, var(--light) 12%, transparent) 12deg, color-mix(in oklab, var(--light) 32%, transparent) 29deg, color-mix(in oklab, var(--light) 12%, transparent) 46deg, transparent 58deg);
-  mask-image: radial-gradient(ellipse 50% 70% at 50% 25%, var(--foreground) 20%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent, var(--foreground) 8%, var(--foreground) 45%, transparent 90%), radial-gradient(ellipse 50% 70% at 50% 25%, var(--foreground) 20%, transparent 100%);
+  mask-composite: intersect;
   filter: blur(10px);
 }
 
@@ -189,14 +191,14 @@
 
 .collection-niche:focus-visible .photo-niche,
 .selected-niche .photo-niche {
-  --photo-brightness: 1.16;
+  --photo-brightness: 1.04;
   --beam-opacity: 0.88;
   --pool-opacity: 0.82;
   --beam-spread: 1.35;
 }
 @media (hover: hover) and (pointer: fine) {
   .collection-niche:hover .photo-niche {
-    --photo-brightness: 1.16;
+    --photo-brightness: 1.04;
     --beam-opacity: 0.88;
     --pool-opacity: 0.82;
     --beam-spread: 1.35;
@@ -205,7 +207,7 @@
 }
 @media (hover: none) {
   .touch-active .photo-niche {
-    --photo-brightness: 1.16;
+    --photo-brightness: 1.04;
     --beam-opacity: 0.88;
     --pool-opacity: 0.82;
     --beam-spread: 1.35;
@@ -223,7 +225,14 @@
 }
 .photo-niche-original { position: absolute; bottom: 0; left: 0; width: 100%; height: 150cqw; overflow: hidden; mask-image: linear-gradient(90deg, transparent, var(--foreground) 14%, var(--foreground) 86%, transparent), linear-gradient(to bottom, transparent, var(--foreground) 12%, var(--foreground) 76%, transparent 89%); mask-composite: intersect; }
 .photo-niche-original > .photo-niche-source { visibility: hidden; }
-.photo-overhead-light { mask-image: radial-gradient(ellipse 50% 70% at 50% 20%, var(--foreground) 10%, transparent 100%); }
+/* Keep atmospheric light above the bottle rather than washing out its label. */
+.photo-niche-original > .photo-niche-light { opacity: calc(var(--beam-opacity) * 0.12); }
+.photo-overhead-light {
+  mask-image: linear-gradient(to bottom, transparent, var(--foreground) 7%, var(--foreground) 25%, transparent 72%), radial-gradient(ellipse 48% 65% at 50% 20%, var(--foreground) 10%, transparent 100%);
+  mask-composite: intersect;
+}
+.phase-detail .camera-world { will-change: auto !important; }
+.phase-detail .selected-niche .photo-niche { --photo-brightness: 1; --beam-opacity: 0.42; --pool-opacity: 0.4; }
 .photo-floor-mirror { position: absolute; top: calc(100% - 19.5cqw); left: 0; width: 100%; height: 84cqw; overflow: hidden; pointer-events: none; mask-composite: intersect; mask-image: linear-gradient(90deg, transparent, var(--foreground) 14%, var(--foreground) 86%, transparent), linear-gradient(to bottom, var(--reflection-ink), color-mix(in oklab, var(--reflection-ink) 70%, transparent) 35%, color-mix(in oklab, var(--reflection-ink) 25%, transparent) 72%, transparent); }
 .photo-floor-mirrored-layers { position: absolute; width: 100%; height: 150cqw; top: -19.5cqw; transform: scaleY(-1); transform-origin: center; filter: blur(0.5px); }
 .photo-floor-mirror::after { content: ""; position: absolute; inset: 35% 0 0; backdrop-filter: blur(2px); mask-image: linear-gradient(to bottom, transparent, var(--foreground)); }
@@ -295,19 +304,21 @@ body:has(.detail-room) .boutique-header { position: fixed; }
 .detail-information { pointer-events: auto; }
 .detail-room.phase-opening, .detail-room.phase-closing { background: transparent; }
 .detail-room.phase-opening > .room-background, .detail-room.phase-closing > .room-background { opacity: 0; }
-.detail-layout { position: relative; min-height: 100svh; display: grid; grid-template-columns: 28% 32%; column-gap: 13%; padding: 85px 0 30px 6%; align-items: center; }
-.detail-information { padding: 25px 0; }
+.detail-layout { position: relative; min-height: 100svh; display: grid; grid-template-columns: 34% 30%; column-gap: 10%; padding: 100px 0 44px 8%; align-items: center; }
+.detail-information { padding: 32px 0; max-width: 460px; }
 .detail-eyebrow { font-size: 8px; text-transform: uppercase; letter-spacing: 0.2em; color: var(--muted-foreground); }
-.detail-information h2 { font-family: var(--font-serif); font-size: 42px; line-height: 1.1; margin: 13px 0 20px; font-weight: 400; }
-.detail-description { font-size: 12px; line-height: 1.85; color: var(--muted-foreground); max-width: 320px; }
-.detail-notes { margin: 24px 0; border-block: 1px solid var(--border); font-size: 11px; }
-.detail-notes > div { display: grid; grid-template-columns: auto minmax(0,1fr); gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.detail-information h2 { font-family: var(--font-serif); font-size: clamp(44px, 4.8vw, 76px); line-height: 0.98; letter-spacing: -0.035em; margin: 20px 0 26px; font-weight: 400; }
+.detail-description { font-size: 14px; line-height: 1.9; color: var(--muted-foreground); max-width: 390px; }
+.detail-notes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 32px 0; padding-block: 20px; border-block: 1px solid var(--border); font-size: 12px; }
+.detail-notes > div { display: flex; flex-direction: column; gap: 10px; padding: 0; }
 .detail-notes > div:last-child { border: 0; }
 .detail-notes dt { color: var(--muted-foreground); text-transform: uppercase; font-size: 9px; }
-.detail-notes dd { text-align: right; }
+.detail-notes dd { text-align: left; line-height: 1.5; }
+.detail-edition { font-size: 9px; text-transform: uppercase; letter-spacing: 0.26em; color: var(--primary); margin-bottom: 16px; }
+.detail-size-label { margin-bottom: 12px; font-size: 9px; text-transform: uppercase; letter-spacing: 0.18em; color: var(--muted-foreground); }
 .detail-purchase-row { display: flex; align-items: center; flex-wrap: wrap; gap: 15px; }
 .detail-purchase-row button { font-size: 11px; min-height: 40px; }
-.detail-add { width: 100%; min-height: 44px; margin-top: 17px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.18em; }
+.detail-add { width: 100%; min-height: 52px; margin-top: 24px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.18em; }
 .detail-navigation { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center; gap: 5px; margin-top: 24px; }
 .back-control { padding: 0; justify-content: flex-start; color: var(--muted-foreground); font-size: 9px; white-space: normal; }
 .back-control svg { width: 12px; }
