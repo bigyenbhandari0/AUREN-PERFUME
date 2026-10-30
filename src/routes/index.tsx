@@ -15,6 +15,10 @@ export const Route = createFileRoute("/")({
       { property: "og:description", content: "Five expressions. One lasting impression." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      ...(storyBackground.startsWith("https://") ? [
+        { property: "og:image", content: storyBackground },
+        { name: "twitter:image", content: storyBackground },
+      ] : []),
     ],
   }),
   component: Index,

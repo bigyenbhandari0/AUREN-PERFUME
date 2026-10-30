@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ProductPhoto } from "@/components/ProductPhoto";
 import { perfumes, formatNPR, type Size } from "@/lib/perfumes";
 import { perfumeImages, storyBackground } from "@/lib/perfume-assets";
+import { cameraTransform, CAMERA_DURATION, type SceneRect } from "@/lib/scene-camera";
 
 type Phase = "collection" | "opening" | "detail" | "closing";
 type Props = { onAdd: (id: string, size: Size) => void; homeSignal: number };
@@ -20,9 +21,11 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
   const sources = useRef<(HTMLDivElement | null)[]>([]);
   const buttons = useRef<(HTMLButtonElement | null)[]>([]);
   const destination = useRef<HTMLDivElement>(null);
-  const moving = useRef<HTMLDivElement>(null);
+  const world = useRef<HTMLDivElement>(null);
+  const room = useRef<HTMLElement>(null);
   const back = useRef<HTMLButtonElement>(null);
-  const start = useRef<DOMRect | null>(null);
+  const baseRects = useRef<SceneRect[]>([]);
+  const origin = useRef("translate(0px, 0px) scale(1)");
   const busy = useRef(false);
   const mounted = useRef(true);
   const animation = useRef<Animation | null>(null);
@@ -30,18 +33,30 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
 
   useEffect(() => {
     mounted.current = true;
+    // Decode every original before navigation; mirrored layers share the same URLs.
+    Object.values(perfumeImages).forEach((src) => { const image = new Image(); image.src = src; image.decode().catch(() => {}); });
     return () => { mounted.current = false; animation.current?.cancel(); };
   }, []);
 
   const open = async (i: number) => {
     const element = sources.current[i];
     const perfume = perfumes[i];
-    if (busy.current || phase !== "collection" || !element || !perfume) return;
+    const plane = world.current;
+    const scene = room.current;
+    if (busy.current || phase !== "collection" || !element || !perfume || !plane || !scene) return;
     busy.current = true;
     const image = element.querySelector("img");
     try { await image?.decode(); } catch { /* The loaded image can still be displayed. */ }
     if (!mounted.current) return;
-    start.current = element.getBoundingClientRect();
+    const bounds = scene.getBoundingClientRect();
+    baseRects.current = sources.current.map((source) => {
+      const rect = source?.getBoundingClientRect();
+      return { left: (rect?.left ?? 0) - bounds.left, top: (rect?.top ?? 0) - bounds.top, width: rect?.width ?? 1, height: rect?.height ?? 1 };
+    });
+    plane.style.width = `${bounds.width}px`;
+    plane.style.height = `${bounds.height}px`;
+    origin.current = `translate(${bounds.left}px, ${bounds.top}px) scale(1)`;
+    plane.style.transform = origin.current;
     setIndex(i);
     setSize("50");
     setPhase("opening");
@@ -52,13 +67,15 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
     busy.current = true;
     const panel = destination.current.closest("[role=dialog]");
     if (panel instanceof HTMLElement) panel.scrollTop = 0;
-    start.current = destination.current.getBoundingClientRect();
     setPhase("closing");
   };
 
   const navigate = (direction: number) => {
     if (busy.current || phase !== "detail") return;
+    busy.current = true;
     setIndex((current) => (current + direction + perfumes.length) % perfumes.length);
+    setSize("50");
+    setPhase("opening");
   };
 
   useEffect(() => {
@@ -89,22 +106,25 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
 
   useLayoutEffect(() => {
     if (phase !== "opening" && phase !== "closing") return;
-    const overlay = moving.current;
-    const from = start.current;
-    const target = phase === "opening" ? destination.current : sources.current[index];
-    if (!overlay || !from || !target) return;
-    const to = target.getBoundingClientRect();
-    const frame = (rect: DOMRect) => ({ left: `${rect.left}px`, top: `${rect.top}px`, width: `${rect.width}px`, height: `${rect.height}px` });
-    Object.assign(overlay.style, frame(from));
+    const plane = world.current;
+    const source = baseRects.current[index];
+    const target = destination.current;
+    if (!plane || !source || !target) return;
+    const camera = cameraTransform(source, target.getBoundingClientRect());
+    const to = phase === "closing" ? origin.current : `translate(${camera.x}px, ${camera.y}px) scale(${camera.scale})`;
+    const from = plane.style.transform || origin.current;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const motion = overlay.animate(reduced ? [frame(to), frame(to)] : [frame(from), frame(to)], {
-      duration: reduced ? 1 : 950,
+    const motion = plane.animate(reduced ? [{ transform: to }, { transform: to }] : [{ transform: from }, { transform: to }], {
+      duration: reduced ? 1 : CAMERA_DURATION,
       easing: "cubic-bezier(0.65, 0, 0.25, 1)",
       fill: "forwards",
     });
     animation.current = motion;
     motion.finished.then(() => {
       if (!mounted.current) return;
+      plane.style.transform = phase === "closing" ? "" : to;
+      if (phase === "closing") { plane.style.width = ""; plane.style.height = ""; }
+      motion.cancel();
       busy.current = false;
       setPhase(phase === "opening" ? "detail" : "collection");
       requestAnimationFrame(() => {
@@ -116,10 +136,10 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
   }, [phase, index]);
 
   if (!p) return null;
-  const transitioning = phase === "opening" || phase === "closing";
 
   return (
-    <section id="collection" className={`gallery-room phase-${phase}`}>
+    <section ref={room} id="collection" className={`gallery-room phase-${phase}`}>
+      <div className="camera-viewport"><div ref={world} className="camera-world">
       <RoomBackground />
       <div className="collection-content" inert={phase !== "collection"}>
         <div className="niche-gallery no-scrollbar" onScroll={(event) => {
@@ -138,6 +158,8 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
             </Button>
           ))}
         </div>
+      </div></div>
+      <div className="collection-editorial" inert={phase !== "collection"}>
         <div className="collection-lockup">
           <p>A presence that lingers.</p>
           <h1>The <em>after-dark</em> collection</h1>
@@ -149,7 +171,6 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
       </div>
 
       {phase !== "collection" && <div className={`detail-room phase-${phase}`} role="dialog" aria-modal="true" aria-label={p.name}>
-        <RoomBackground />
         <div className="detail-layout">
           <div className="detail-information" inert={phase !== "detail"}>
             <p className="detail-eyebrow">{String(index + 1).padStart(2, "0")} / 05 — {p.character}</p>
@@ -168,12 +189,9 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
               <div className="flex gap-2"><Button variant="outline" size="icon" title="Previous perfume" aria-label="Previous perfume" onClick={() => navigate(-1)}><ChevronLeft /></Button><Button variant="outline" size="icon" title="Next perfume" aria-label="Next perfume" onClick={() => navigate(1)}><ChevronRight /></Button></div>
             </div>
           </div>
-          <div ref={destination} className={`detail-niche ${transitioning ? "niche-hidden" : ""}`}>
-            <ProductPhoto key={p.id} src={perfumeImages[p.id] ?? ""} alt={`${p.name} perfume in an illuminated stone niche`} glow={p.glow} loading="eager" />
-          </div>
+          <div ref={destination} className="detail-niche" aria-hidden="true" />
         </div>
       </div>}
-      {transitioning && <div ref={moving} className="moving-niche" aria-hidden="true"><ProductPhoto src={perfumeImages[p.id] ?? ""} alt="" glow={p.glow} loading="eager" /></div>}
     </section>
   );
 }
