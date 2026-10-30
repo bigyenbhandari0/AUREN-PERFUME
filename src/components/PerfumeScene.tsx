@@ -149,7 +149,7 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
         }}>
           {perfumes.map((perfume, i) => (
             <Button key={perfume.id} ref={(el) => { buttons.current[i] = el; }} variant="ghost"
-              className={`collection-niche ${phase !== "collection" && index === i ? "selected-niche" : ""}`}
+              className={`collection-niche ${position === i ? "touch-active" : ""} ${phase !== "collection" && index === i ? "selected-niche" : ""}`}
               aria-label={`Discover ${perfume.name}`} onClick={() => open(i)}>
               <div ref={(el) => { sources.current[i] = el; }} className="niche-image-box">
                 <ProductPhoto src={perfumeImages[perfume.id] ?? ""} alt={`${perfume.name} perfume in an illuminated stone niche`} glow={perfume.glow} loading="eager" />
