@@ -132,10 +132,10 @@
   overflow: visible;
   width: 100%;
   height: 100%;
-  --photo-brightness: 1;
-  --beam-opacity: 0.28;
-  --pool-opacity: 0.25;
-  --beam-spread: 0.8;
+  --photo-brightness: 0.82;
+  --beam-opacity: 0.16;
+  --pool-opacity: 0.14;
+  --beam-spread: 0.72;
   container-type: inline-size;
   --light: color-mix(in oklab, var(--foreground) 92%, var(--glow));
 }
@@ -188,26 +188,26 @@
 
 .collection-niche:focus-visible .photo-niche,
 .selected-niche .photo-niche {
-  --photo-brightness: 1.12;
-  --beam-opacity: 0.78;
-  --pool-opacity: 0.7;
-  --beam-spread: 1.2;
+  --photo-brightness: 1.16;
+  --beam-opacity: 0.88;
+  --pool-opacity: 0.82;
+  --beam-spread: 1.35;
 }
 @media (hover: hover) and (pointer: fine) {
   .collection-niche:hover .photo-niche {
-    --photo-brightness: 1.12;
-    --beam-opacity: 0.78;
-    --pool-opacity: 0.7;
-    --beam-spread: 1.2;
+    --photo-brightness: 1.16;
+    --beam-opacity: 0.88;
+    --pool-opacity: 0.82;
+    --beam-spread: 1.35;
   }
   .collection-niche:hover .niche-caption { opacity: 1; transform: translateY(0); }
 }
 @media (hover: none) {
   .touch-active .photo-niche {
-    --photo-brightness: 1.12;
-    --beam-opacity: 0.78;
-    --pool-opacity: 0.7;
-    --beam-spread: 1.2;
+    --photo-brightness: 1.16;
+    --beam-opacity: 0.88;
+    --pool-opacity: 0.82;
+    --beam-spread: 1.35;
   }
   .touch-active .niche-caption { opacity: 1; transform: translateY(0); }
 }
@@ -223,11 +223,12 @@
 .photo-niche-original { position: absolute; bottom: 0; left: 0; width: 100%; height: 150cqw; overflow: hidden; clip-path: inset(0 0 13%); mask-image: linear-gradient(90deg, transparent, var(--foreground) 9%, var(--foreground) 91%, transparent); }
 .photo-niche-original > .photo-niche-source { visibility: hidden; }
 .photo-overhead-light { mask-image: linear-gradient(to bottom, var(--foreground), var(--foreground) 35%, transparent 85%); }
-.photo-floor-mirror { position: absolute; top: calc(100% - 19.5cqw); left: 0; width: 100%; height: 56cqw; overflow: hidden; pointer-events: none; mask-image: linear-gradient(to bottom, var(--reflection-ink), color-mix(in oklab, var(--reflection-ink) 70%, transparent) 35%, color-mix(in oklab, var(--reflection-ink) 25%, transparent) 72%, transparent); }
+.photo-floor-mirror { position: absolute; top: calc(100% - 19.5cqw); left: 0; width: 100%; height: 84cqw; overflow: hidden; pointer-events: none; mask-image: linear-gradient(to bottom, var(--reflection-ink), color-mix(in oklab, var(--reflection-ink) 70%, transparent) 35%, color-mix(in oklab, var(--reflection-ink) 25%, transparent) 72%, transparent); }
 .photo-floor-mirrored-layers { position: absolute; width: 100%; height: 150cqw; top: -19.5cqw; transform: scaleY(-1); transform-origin: center; filter: blur(0.5px); }
 .photo-floor-mirror::after { content: ""; position: absolute; inset: 35% 0 0; backdrop-filter: blur(2px); mask-image: linear-gradient(to bottom, transparent, var(--foreground)); }
 .photo-contact-shadow { position: absolute; top: calc(100% - 19.5cqw); left: 25%; width: 50%; height: 2%; background: radial-gradient(ellipse, var(--contact-shadow), transparent 75%); pointer-events: none; }
 .photo-niche-source {
+  opacity: var(--beam-opacity); transition: opacity 550ms ease-in-out;
   position: absolute; top: 1%; left: 50%; translate: -50% 0;
   width: 18px; height: 4px; background: var(--foreground);
   box-shadow: var(--source-shadow); border-radius: 50%;
@@ -243,7 +244,7 @@ body:has(.detail-room) .boutique-header { position: fixed; }
 .gallery-room {
   --gallery-top: clamp(124px, 18svh, 180px);
   --display-height: clamp(360px, 52svh, 640px);
-  --floor-tail: 5.037vw;
+  --floor-tail: 9vw;
   position: relative; isolation: isolate;
   height: calc(var(--gallery-top) + var(--display-height) + var(--floor-tail) + 152px);
   background: var(--scene-dark);
@@ -264,19 +265,19 @@ body:has(.detail-room) .boutique-header { position: fixed; }
   display: flex; justify-content: space-between; align-items: flex-start;
 }
 .collection-niche {
-  position: relative; display: flex; flex-direction: column; gap: 0; width: 15%; height: auto;
+  position: relative; container-type: inline-size; display: flex; flex-direction: column; gap: 0; width: 15%; height: auto;
   padding: 0 0 var(--floor-tail); border: 0; border-radius: 0; background: transparent;
   font-weight: 400; white-space: normal; transition: opacity 550ms ease-in-out;
 }
 .collection-niche:hover, .collection-niche:focus-visible { background: transparent; }
 .niche-image-box { width: 100%; height: var(--display-height); min-height: 360px; }
-.niche-caption { position: absolute; top: 24px; left: 0; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 7px; font-family: var(--font-serif); font-size: 19px; opacity: 0; transform: translateY(6px); transition: opacity 300ms ease, transform 300ms ease; pointer-events: none; }
+.niche-caption { position: absolute; top: calc(var(--display-height) - 150cqw + 32px); left: 0; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 7px; font-family: var(--font-serif); font-size: 19px; opacity: 0; transform: translateY(6px); transition: opacity 300ms ease, transform 300ms ease; pointer-events: none; }
 .collection-niche:focus-visible .niche-caption { opacity: 1; transform: translateY(0); }
 .niche-discover { display: flex; align-items: center; gap: 5px; font-family: var(--font-sans); color: var(--muted-foreground); font-size: 8px; text-transform: uppercase; letter-spacing: 0.16em; }
 @media (hover: hover) {
-  .niche-gallery:has(.collection-niche:hover) .collection-niche:not(:hover) { opacity: 0.58; }
+  .niche-gallery:has(.collection-niche:hover) .collection-niche:not(:hover) { opacity: 0.78; }
 }
-.niche-gallery:has(.collection-niche:focus-visible) .collection-niche:not(:focus-visible) { opacity: 0.58; }
+.niche-gallery:has(.collection-niche:focus-visible) .collection-niche:not(:focus-visible) { opacity: 0.78; }
 .collection-lockup { position: absolute; top: calc(var(--gallery-top) + var(--display-height) + var(--floor-tail) + 20px); left: 4%; }
 .collection-lockup p { font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted-foreground); }
 .collection-lockup h1 { font-family: var(--font-serif); font-size: 34px; line-height: 1.15; margin: 9px 0; font-weight: 400; }
@@ -317,11 +318,13 @@ body:has(.detail-room) .boutique-header { position: fixed; }
 
 @media (max-width: 767px) {
   .boutique-header { padding: 12px 20px; }
-  .gallery-room { --gallery-top: 100px; --display-height: max(400px, 58svh); --floor-tail: 27.74vw; }
+  .gallery-room { --gallery-top: 100px; --display-height: max(400px, 58svh, 114vw); --floor-tail: 49vw; }
   .niche-gallery { left: 0; right: 0; padding-inline: 12%; gap: 24px; justify-content: flex-start; overflow-x: auto; scroll-snap-type: x mandatory; }
   .collection-niche { width: 76vw; flex-shrink: 0; scroll-snap-align: center; }
   .niche-image-box { min-height: 400px; }
   .niche-caption { font-size: 23px; }
+  .phase-detail .camera-viewport { pointer-events: none; }
+  .detail-room.phase-detail { pointer-events: auto; }
   .collection-lockup { left: 6%; right: 6%; top: calc(var(--gallery-top) + var(--display-height) + var(--floor-tail) + 24px); }
   .collection-lockup h1 { font-size: 30px; }
   .gallery-position { position: absolute; top: calc(var(--gallery-top) + var(--display-height) + var(--floor-tail) + 6px); left: 6%; display: flex; gap: 7px; }

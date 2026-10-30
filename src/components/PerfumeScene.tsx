@@ -50,7 +50,7 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
     if (!mounted.current) return;
     const bounds = scene.getBoundingClientRect();
     baseRects.current = sources.current.map((source) => {
-      const rect = source?.getBoundingClientRect();
+      const rect = source?.querySelector(".photo-niche-original")?.getBoundingClientRect() ?? source?.getBoundingClientRect();
       return { left: (rect?.left ?? 0) - bounds.left, top: (rect?.top ?? 0) - bounds.top, width: rect?.width ?? 1, height: rect?.height ?? 1 };
     });
     plane.style.width = `${bounds.width}px`;
@@ -145,12 +145,15 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
         <div className="niche-gallery no-scrollbar" onScroll={(event) => {
           const el = event.currentTarget;
           const first = el.firstElementChild as HTMLElement | null;
-          if (first) setPosition(Math.round(el.scrollLeft / (first.offsetWidth + 24)));
+          if (first) {
+            const gap = parseFloat(getComputedStyle(el).columnGap) || 0;
+            setPosition(Math.max(0, Math.min(perfumes.length - 1, Math.round(el.scrollLeft / (first.offsetWidth + gap)))));
+          }
         }}>
           {perfumes.map((perfume, i) => (
             <Button key={perfume.id} ref={(el) => { buttons.current[i] = el; }} variant="ghost"
               className={`collection-niche ${position === i ? "touch-active" : ""} ${phase !== "collection" && index === i ? "selected-niche" : ""}`}
-              aria-label={`Discover ${perfume.name}`} onClick={() => open(i)}>
+              aria-label={`Discover ${perfume.name}`} aria-haspopup="dialog" onClick={() => open(i)}>
               <div ref={(el) => { sources.current[i] = el; }} className="niche-image-box">
                 <ProductPhoto src={perfumeImages[perfume.id] ?? ""} alt={`${perfume.name} perfume in an illuminated stone niche`} glow={perfume.glow} loading="eager" />
               </div>
