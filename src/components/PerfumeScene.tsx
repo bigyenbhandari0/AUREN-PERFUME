@@ -158,7 +158,7 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
             </Button>
           ))}
         </div>
-      </div></div>
+      </div></div></div>
       <div className="collection-editorial" inert={phase !== "collection"}>
         <div className="collection-lockup">
           <p>A presence that lingers.</p>

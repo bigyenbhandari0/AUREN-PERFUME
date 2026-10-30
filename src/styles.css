@@ -129,10 +129,12 @@
 /* Anchored architectural lighting, with the complete photograph intact. */
 @utility photo-niche {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   width: 100%;
   height: 100%;
-  background: var(--scene-dark);
+  --photo-brightness: 1.07;
+  --beam-opacity: 0.85;
+  --pool-opacity: 0.75;
   --light: color-mix(in oklab, var(--foreground) 92%, var(--glow));
   mask-image: linear-gradient(90deg, transparent, var(--foreground) 9%, var(--foreground) 91%, transparent);
 }
@@ -144,7 +146,7 @@
   object-fit: contain;
   object-position: center bottom;
   mask-image: linear-gradient(to bottom, transparent, var(--foreground) 10%, var(--foreground) 92%, transparent);
-  filter: brightness(1) contrast(1);
+  filter: brightness(var(--photo-brightness)) contrast(1.02);
   transition: filter 550ms ease-in-out;
 }
 
@@ -153,58 +155,57 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.55;
+  opacity: var(--beam-opacity);
   transition: opacity 550ms ease-in-out;
   background:
-    radial-gradient(ellipse 40% 45% at 50% 34%, color-mix(in oklab, var(--light) 20%, transparent), transparent 90%),
-    conic-gradient(from 164deg at 50% 1%, transparent 0deg, color-mix(in oklab, var(--light) 16%, transparent) 9deg, color-mix(in oklab, var(--light) 27%, transparent) 16deg, color-mix(in oklab, var(--light) 16%, transparent) 23deg, transparent 32deg);
-  mask-image: linear-gradient(to bottom, var(--foreground), transparent 75%);
-  filter: blur(7px);
+    radial-gradient(ellipse 65% 60% at 50% 38%, color-mix(in oklab, var(--light) 22%, transparent), transparent 85%),
+    conic-gradient(from 151deg at 50% 2%, transparent 0deg, color-mix(in oklab, var(--light) 12%, transparent) 12deg, color-mix(in oklab, var(--light) 32%, transparent) 29deg, color-mix(in oklab, var(--light) 12%, transparent) 46deg, transparent 58deg);
+  mask-image: linear-gradient(to bottom, var(--foreground), var(--foreground) 45%, transparent 96%);
+  filter: blur(10px);
 }
 
 /* Faint light pool near the photographed shelf at the bottle base. */
 @utility photo-niche-pool {
   position: absolute;
   left: 50%;
-  bottom: 14%;
+  bottom: 9%;
   translate: -50% 0;
-  width: 60%;
-  height: 9%;
+  width: 95%;
+  height: 16%;
   pointer-events: none;
-  opacity: 0.35;
+  opacity: var(--pool-opacity);
   transition: opacity 550ms ease-in-out;
   background: radial-gradient(
     ellipse 50% 50% at 50% 50%,
-    color-mix(in oklab, var(--light) 26%, transparent),
-    transparent 70%
+    color-mix(in oklab, var(--light) 42%, transparent),
+    transparent 95%
   );
 }
 
-.collection-niche:hover .photo-niche-img,
-.collection-niche:focus-visible .photo-niche-img,
-.detail-niche:hover .photo-niche-img {
-  filter: brightness(1.15) contrast(1.02);
-}
-.collection-niche:hover .photo-niche-light,
-.collection-niche:focus-visible .photo-niche-light,
-.detail-niche:hover .photo-niche-light {
-  opacity: 1;
-}
-.collection-niche:hover .photo-niche-pool,
-.collection-niche:focus-visible .photo-niche-pool,
-.detail-niche:hover .photo-niche-pool {
-  opacity: 1;
+.collection-niche:hover .photo-niche,
+.collection-niche:focus-visible .photo-niche,
+.selected-niche .photo-niche {
+  --photo-brightness: 1.16;
+  --beam-opacity: 1;
+  --pool-opacity: 1;
 }
 
 :root {
   --scene-dark: oklch(0.085 0.002 70);
   --scene-wall: oklch(0.11 0.003 70 / 88%);
   --scene-floor: oklch(0.06 0.002 70 / 94%);
-  --source-shadow: 0 0 12px color-mix(in oklab, var(--foreground) 65%, transparent);
+  --source-shadow: 0 0 16px color-mix(in oklab, var(--foreground) 85%, transparent);
+  --reflection-ink: oklch(0.94 0.02 85 / 50%);
+  --contact-shadow: oklch(0.04 0 0 / 75%);
 }
+.photo-niche-original { position: absolute; inset: 0; overflow: hidden; }
+.photo-floor-mirror { position: absolute; top: 86%; left: 0; width: 100%; height: 25%; overflow: hidden; pointer-events: none; mask-image: linear-gradient(to bottom, var(--reflection-ink), color-mix(in oklab, var(--reflection-ink) 35%, transparent) 55%, transparent); backdrop-filter: blur(0.3px); }
+.photo-floor-mirrored-layers { position: absolute; width: 100%; height: 400%; bottom: 0; transform: scaleY(-1); transform-origin: center; filter: blur(0.5px); }
+.photo-floor-mirror::after { content: ""; position: absolute; inset: 35% 0 0; backdrop-filter: blur(2px); mask-image: linear-gradient(to bottom, transparent, var(--foreground)); }
+.photo-contact-shadow { position: absolute; top: 85%; left: 25%; width: 50%; height: 2%; background: radial-gradient(ellipse, var(--contact-shadow), transparent 75%); pointer-events: none; }
 .photo-niche-source {
   position: absolute; top: 1%; left: 50%; translate: -50% 0;
-  width: 8px; height: 3px; background: var(--foreground);
+  width: 18px; height: 4px; background: var(--foreground);
   box-shadow: var(--source-shadow); border-radius: 50%;
 }
 .boutique-header {
@@ -216,6 +217,11 @@
 body:has(.detail-room) .boutique-header { position: fixed; }
 .boutique-header button { border: 0; padding: 0 8px; }
 .gallery-room { position: relative; isolation: isolate; height: 100svh; min-height: 690px; background: var(--scene-dark); }
+.camera-viewport { position: absolute; inset: 0; overflow: hidden; }
+.camera-world { position: absolute; inset: 0; transform-origin: 0 0; isolation: isolate; }
+.gallery-room:not(.phase-collection) .camera-viewport { position: fixed; z-index: 39; }
+.gallery-room:not(.phase-collection) .camera-world { inset: auto; top: 0; left: 0; will-change: transform; }
+.collection-editorial { position: absolute; inset: 0; pointer-events: none; }
 .room-background { position: absolute; inset: 0; z-index: -1; overflow: hidden; background: var(--scene-dark); }
 .room-background > img { width: 100%; height: 100%; object-fit: cover; opacity: 0.28; }
 .room-background::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, var(--scene-wall), transparent 40%, var(--scene-floor)); }
@@ -244,12 +250,12 @@ body:has(.detail-room) .boutique-header { position: fixed; }
 .collection-lockup em { color: var(--primary); }
 .collection-lockup > span { font-size: 10px; color: var(--muted-foreground); }
 .gallery-position { display: none; }
-.phase-opening .collection-niche, .phase-detail .collection-niche, .phase-closing .collection-niche { opacity: 0; transition-duration: 250ms; }
-.phase-closing .collection-niche:not(.selected-niche) { opacity: 1; transition: opacity 350ms 550ms; }
-.phase-opening .selected-niche, .phase-detail .selected-niche, .phase-closing .selected-niche { visibility: hidden; }
+.gallery-room:not(.phase-collection) .collection-niche { opacity: 1; }
+.gallery-room:not(.phase-collection) .niche-caption { opacity: 0; transition: opacity 150ms; }
 .phase-opening .collection-lockup, .phase-detail .collection-lockup { opacity: 0; transition: opacity 250ms; }
 .phase-closing .collection-lockup { opacity: 1; transition: opacity 300ms 550ms; }
-.detail-room { position: fixed; inset: 0; z-index: 40; isolation: isolate; overflow-y: auto; background: var(--scene-dark); }
+.detail-room { position: fixed; inset: 0; z-index: 40; isolation: isolate; overflow-y: auto; background: transparent; pointer-events: none; }
+.detail-information { pointer-events: auto; }
 .detail-room.phase-opening, .detail-room.phase-closing { background: transparent; }
 .detail-room.phase-opening > .room-background, .detail-room.phase-closing > .room-background { opacity: 0; }
 .detail-layout { position: relative; min-height: 100svh; display: grid; grid-template-columns: 28% 32%; column-gap: 13%; padding: 85px 0 30px 6%; align-items: center; }
@@ -270,8 +276,7 @@ body:has(.detail-room) .boutique-header { position: fixed; }
 .back-control svg { width: 12px; }
 .detail-niche { height: 80svh; max-height: 1050px; width: 100%; }
 .niche-hidden { visibility: hidden; }
-.moving-niche { position: fixed; z-index: 42; pointer-events: none; overflow: hidden; }
-.phase-opening .detail-information { animation: detail-enter 400ms 500ms both; }
+.phase-opening .detail-information { animation: detail-enter 280ms 800ms both; }
 .phase-closing .detail-information { opacity: 0; transition: opacity 200ms; }
 @keyframes detail-enter { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 
