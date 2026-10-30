@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState, type MouseEvent } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type MouseEvent } from "react";
 import { PerfumeScene } from "@/components/PerfumeScene";
 import { Button } from "@/components/ui/button";
 import { perfumes, formatNPR } from "@/lib/perfumes";
@@ -25,6 +25,9 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  }, []);
   const cart = useCart();
   const [bagOpen, setBagOpen] = useState(false);
   const [homeSignal, setHomeSignal] = useState(0);
