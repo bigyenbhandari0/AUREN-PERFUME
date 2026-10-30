@@ -150,7 +150,7 @@
   mask-image: linear-gradient(to bottom, transparent, var(--foreground) 10%, var(--foreground) 92%, transparent);
   opacity: min(1, var(--photo-brightness));
   image-rendering: auto;
-  transition: opacity 450ms ease-in-out;
+  transition: opacity 120ms ease-out;
 }
 
 /* Softly feathered light layer, anchored overhead; center nudged by --lx/--ly. */
@@ -161,7 +161,7 @@
   opacity: var(--beam-opacity);
   transform: scaleX(var(--beam-spread));
   transform-origin: 50% 2%;
-  transition: opacity 550ms ease-in-out, transform 550ms ease-in-out;
+  transition: opacity 110ms ease-out, transform 140ms ease-out;
   background:
     radial-gradient(ellipse 22% 48% at 50% 18%, color-mix(in oklab, var(--light) 18%, transparent) 0%, color-mix(in oklab, var(--light) 7%, transparent) 45%, transparent 100%),
     radial-gradient(ellipse 58% 65% at 50% 48%, color-mix(in oklab, var(--light) 11%, transparent) 0%, color-mix(in oklab, var(--light) 4%, transparent) 48%, transparent 100%);
@@ -181,7 +181,7 @@
   pointer-events: none;
   opacity: var(--pool-opacity);
   transform: scaleX(var(--beam-spread));
-  transition: opacity 550ms ease-in-out, transform 550ms ease-in-out;
+  transition: opacity 110ms ease-out, transform 140ms ease-out;
   background: radial-gradient(
     ellipse 50% 50% at 50% 50%,
     color-mix(in oklab, var(--light) 42%, transparent),
@@ -246,7 +246,7 @@
 }
 .photo-contact-shadow { position: absolute; top: calc(100% - 19.5cqw); left: 25%; width: 50%; height: 2%; background: radial-gradient(ellipse, var(--contact-shadow), transparent 75%); pointer-events: none; }
 .photo-niche-source {
-  opacity: var(--beam-opacity); transition: opacity 550ms ease-in-out;
+  opacity: var(--beam-opacity); transition: opacity 110ms ease-out;
   position: absolute; top: 1%; left: 50%; translate: -50% 0;
   width: 18px; height: 4px; background: var(--foreground);
   box-shadow: var(--source-shadow); border-radius: 50%;
@@ -304,7 +304,7 @@ body:has(.detail-room) .boutique-header { position: fixed; }
 .collection-niche {
   position: relative; container-type: inline-size; display: flex; flex-direction: column; gap: 0; width: 15%; height: auto;
   padding: 0 0 var(--floor-tail); border: 0; border-radius: 0; background: transparent;
-  font-weight: 400; white-space: normal; transition: opacity 550ms ease-in-out;
+  font-weight: 400; white-space: normal; transition: opacity 110ms ease-out;
 }
 .collection-niche:hover, .collection-niche:focus-visible { background: transparent; }
 /* A small marker preserves keyboard orientation without boxing in the scene. */
@@ -314,7 +314,7 @@ body:has(.detail-room) .boutique-header { position: fixed; }
   width: 6px; height: 6px; border: 1px solid var(--primary); border-radius: 50%;
 }
 .niche-image-box { width: 100%; height: var(--display-height); min-height: 360px; }
-.niche-caption { position: absolute; top: calc(var(--display-height) - 150cqw - 20px); left: 0; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 7px; font-family: var(--font-serif); font-size: 19px; opacity: 0; transform: translateY(6px); transition: opacity 300ms ease, transform 300ms ease; pointer-events: none; }
+.niche-caption { position: absolute; top: calc(var(--display-height) - 150cqw - 20px); left: 0; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 7px; font-family: var(--font-serif); font-size: 19px; opacity: 0; transform: translateY(6px); transition: opacity 140ms ease-out, transform 180ms ease-out; pointer-events: none; }
 .collection-niche:focus-visible:not([data-restored-focus]) .niche-caption { opacity: 1; transform: translateY(0); }
 .niche-discover { display: flex; align-items: center; gap: 5px; font-family: var(--font-sans); color: var(--muted-foreground); font-size: 8px; text-transform: uppercase; letter-spacing: 0.16em; }
 @media (hover: hover) {
@@ -570,10 +570,10 @@ html { scroll-behavior: smooth; }
 }
 
 /* Bottle and cap turn together over a clean, stationary stone background. */
-.photo-product-rig { position: absolute; inset: 0; transform-origin: 50% 83.5%; }
+.photo-product-rig { position: absolute; inset: 0; transform-origin: var(--product-origin, 50% 83.5%); }
 .photo-bottle {
   position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain;
-  clip-path: polygon(45.2% 28.3%, 46% 28.1%, 50% 28%, 54% 28.1%, 55% 28.3%, 55% 32.5%, 57.1% 32.9%, 57.1% 36.9%, 68.5% 37.4%, 70.5% 37.9%, 71.5% 39.1%, 71.5% 81.5%, 70.8% 82.8%, 69% 83.5%, 31% 83.5%, 29.3% 82.8%, 28.7% 81.5%, 28.7% 39.1%, 29.5% 37.9%, 31.5% 37.4%, 43.2% 36.9%, 43.2% 32.9%, 45.2% 32.5%);
+  clip-path: var(--bottle-clip);
 }
 .phase-opening .selected-niche .photo-product-rig,
 .phase-detail .selected-niche .photo-product-rig {
@@ -644,8 +644,8 @@ html { scroll-behavior: smooth; }
 .photo-cap {
   position: absolute; inset: 0; width: 100%; height: 100%;
   object-fit: contain; object-position: center bottom; pointer-events: none;
-  clip-path: polygon(39.35% 23.2%, 39.8% 22.6%, 42% 22.1%, 46% 21.7%, 50% 21.6%, 54% 21.7%, 58% 22.1%, 60.6% 22.6%, 61.1% 23.2%, 61.1% 35.1%, 59.4% 35.6%, 55% 35.8%, 45% 35.8%, 40.8% 35.6%, 39.35% 35.1%);
-  transform-origin: 50% 28.7%;
+  clip-path: var(--cap-clip);
+  transform-origin: var(--cap-origin, 50% 28.7%);
   transform: translate(0, 0) rotate(0deg);
 }
 /* The moving cap needs the upper headroom; the photograph retains its own fade. */

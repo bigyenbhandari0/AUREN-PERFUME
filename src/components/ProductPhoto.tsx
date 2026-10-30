@@ -1,8 +1,9 @@
 import { type CSSProperties } from "react";
-import { EMBER_UNCAPPED, EMBER_BACKGROUND } from "@/lib/cap-animation";
+import { capProfiles } from "@/lib/cap-animation";
 
 type Props = {
   src: string;
+  productId?: string;
   capAnimation?: boolean;
   alt: string;
   /** oklch accent tint for the overhead light */
@@ -12,11 +13,12 @@ type Props = {
   loading?: "lazy" | "eager";
 };
 
-function PhotoLayers({ src, alt, imgClassName, loading, capAnimation }: Pick<Props, "src" | "alt" | "imgClassName" | "loading" | "capAnimation">) {
+function PhotoLayers({ src, alt, imgClassName, loading, capAnimation, productId = "ember-veil" }: Pick<Props, "src" | "alt" | "imgClassName" | "loading" | "capAnimation" | "productId">) {
+  const profile = capAnimation ? capProfiles[productId] : undefined;
   return <>
-    <img src={capAnimation ? EMBER_BACKGROUND : src} alt={capAnimation ? "" : alt} loading={loading} decoding="async" draggable={false} className={`photo-niche-img ${imgClassName ?? ""}`} />
-    {capAnimation && <div className="photo-product-rig">
-      <img src={EMBER_UNCAPPED} alt={alt} decoding="async" draggable={false} className="photo-bottle" />
+    <img src={profile?.background ?? src} alt={profile ? "" : alt} loading={loading} decoding="async" draggable={false} className={`photo-niche-img ${imgClassName ?? ""}`} />
+    {profile && <div className="photo-product-rig">
+      <img src={profile.uncapped} alt={alt} decoding="async" draggable={false} className="photo-bottle" />
       <img src={src} alt="" aria-hidden="true" decoding="async" draggable={false} className="photo-cap" />
     </div>}
     <div className="photo-niche-light" aria-hidden />
@@ -26,16 +28,17 @@ function PhotoLayers({ src, alt, imgClassName, loading, capAnimation }: Pick<Pro
 }
 
 /** A DOM floor mirror shares all photograph and lighting states with its source. */
-export function ProductPhoto({ src, alt, glow, className = "", imgClassName = "", loading = "lazy", capAnimation = false }: Props) {
+export function ProductPhoto({ src, alt, glow, className = "", imgClassName = "", loading = "lazy", capAnimation = false, productId = "ember-veil" }: Props) {
+  const profile = capProfiles[productId];
   return (
     <div
       className={`photo-niche ${className}`}
-      style={{ "--glow": glow } as CSSProperties}
+      style={{ "--glow": glow, "--cap-clip": profile?.capClip, "--bottle-clip": profile?.bottleClip, "--cap-origin": profile?.capOrigin, "--product-origin": profile?.productOrigin } as CSSProperties}
     >
-      <div className="photo-niche-original"><PhotoLayers src={src} alt={alt} imgClassName={imgClassName} loading={loading} capAnimation={capAnimation} /></div>
+      <div className="photo-niche-original"><PhotoLayers src={src} alt={alt} imgClassName={imgClassName} loading={loading} capAnimation={capAnimation} productId={productId} /></div>
       <div className="photo-overhead-light photo-niche-light" aria-hidden />
       <div className="photo-overhead-source photo-niche-source" aria-hidden />
-      <div className="photo-floor-mirror" aria-hidden="true"><div className="photo-floor-mirrored-layers"><PhotoLayers src={src} alt="" imgClassName={imgClassName} loading={loading} capAnimation={capAnimation} /></div></div>
+      <div className="photo-floor-mirror" aria-hidden="true"><div className="photo-floor-mirrored-layers"><PhotoLayers src={src} alt="" imgClassName={imgClassName} loading={loading} capAnimation={capAnimation} productId={productId} /></div></div>
       <div className="photo-contact-shadow" aria-hidden />
     </div>
   );

@@ -7,7 +7,7 @@ import { perfumes, formatNPR, type Size } from "@/lib/perfumes";
 import { perfumeImages, storyBackground } from "@/lib/perfume-assets";
 import { cameraTransform, CAMERA_DURATION, type SceneRect } from "@/lib/scene-camera";
 
-import { preloadEmberCap } from "@/lib/cap-animation";
+import { preloadPerfumeCap } from "@/lib/cap-animation";
 
 type Phase = "collection" | "opening" | "detail" | "closing";
 type Props = { onAdd: (id: string, size: Size) => void; homeSignal: number };
@@ -17,7 +17,7 @@ function RoomBackground() {
 }
 
 export function PerfumeScene({ onAdd, homeSignal }: Props) {
-  const [capReady, setCapReady] = useState(false);
+  const [capReady, setCapReady] = useState<Record<string, boolean>>({});
   const [phase, setPhase] = useState<Phase>("collection");
   const [index, setIndex] = useState(0);
   const [size, setSize] = useState<Size>("50");
@@ -38,8 +38,16 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
 
   useEffect(() => {
     mounted.current = true;
-    void preloadEmberCap().then((ready) => { if (mounted.current) setCapReady(ready); });
-    return () => { mounted.current = false; animation.current?.cancel(); };
+    const warmup = window.setTimeout(() => {
+      void (async () => {
+        for (const perfume of perfumes) {
+          if (!mounted.current) break;
+          const ready = await preloadPerfumeCap(perfume.id);
+          if (mounted.current) setCapReady((current) => ({ ...current, [perfume.id]: ready }));
+        }
+      })();
+    }, 500);
+    return () => { mounted.current = false; window.clearTimeout(warmup); animation.current?.cancel(); };
   }, []);
 
   const open = async (i: number) => {
@@ -51,10 +59,8 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
     busy.current = true;
     const image = element.querySelector("img");
     try { if (image && (!image.complete || !image.naturalWidth)) await image.decode(); } catch { /* The loaded image can still be displayed. */ }
-    if (i === 0) {
-      const ready = await preloadEmberCap();
-      if (mounted.current) setCapReady(ready);
-    }
+    const ready = await preloadPerfumeCap(perfume.id);
+    if (mounted.current) setCapReady((current) => ({ ...current, [perfume.id]: ready }));
     if (!mounted.current) return;
     const bounds = scene.getBoundingClientRect();
     baseRects.current = sources.current.map((source) => {
@@ -83,13 +89,18 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
     setPhase("closing");
   };
 
-  const navigate = (direction: number) => {
+  const navigate = async (direction: number) => {
     if (busy.current || phase !== "detail") return;
     busy.current = true;
     const panel = destination.current?.closest("[role=dialog]");
     if (panel instanceof HTMLElement) panel.scrollTop = 0;
     if (world.current) world.current.style.translate = "";
-    setIndex((current) => (current + direction + perfumes.length) % perfumes.length);
+    const next = (index + direction + perfumes.length) % perfumes.length;
+    const nextId = perfumes[next]!.id;
+    const ready = await preloadPerfumeCap(nextId);
+    if (!mounted.current) return;
+    setCapReady((current) => ({ ...current, [nextId]: ready }));
+    setIndex(next);
     setSize("50");
     setPhase("opening");
   };
@@ -213,7 +224,7 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
               onKeyDown={(event) => event.currentTarget.removeAttribute("data-restored-focus")}
               aria-label={`Discover ${perfume.name}`} aria-haspopup="dialog" onClick={() => open(i)}>
               <div ref={(el) => { sources.current[i] = el; }} className="niche-image-box">
-                <ProductPhoto capAnimation={i === 0 && capReady} src={perfumeImages[perfume.id] ?? ""} alt={`${perfume.name} perfume in an illuminated stone niche`} glow={perfume.glow} loading="eager" />
+                <ProductPhoto productId={perfume.id} capAnimation={!!capReady[perfume.id]} src={perfumeImages[perfume.id] ?? ""} alt={`${perfume.name} perfume in an illuminated stone niche`} glow={perfume.glow} loading="eager" />
               </div>
               <span className="niche-caption"><span>{perfume.name}</span><span className="niche-discover">Discover <ArrowRight size={11} /></span></span>
             </Button>

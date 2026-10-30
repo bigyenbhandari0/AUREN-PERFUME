@@ -1,7 +1,7 @@
 import { cleanup, render } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { ProductPhoto } from "@/components/ProductPhoto";
-import { EMBER_UNCAPPED, EMBER_BACKGROUND } from "@/lib/cap-animation";
+import { EMBER_UNCAPPED, EMBER_BACKGROUND, capProfiles } from "@/lib/cap-animation";
 
 afterEach(cleanup);
 describe("Ember cap layers", () => {
@@ -19,5 +19,15 @@ describe("Ember cap layers", () => {
     const { container } = render(<ProductPhoto src="/original.png" alt="Perfume" glow="oklch(0.78 0.14 70)" />);
     expect(container.querySelector(".photo-cap")).toBeNull();
     expect(container.querySelectorAll('img[src="/original.png"]')).toHaveLength(2);
+  });
+});
+
+describe("All fragrance profiles", () => {
+  it.each(Object.entries(capProfiles))("keeps %s source and reflection layers matched", (productId, profile) => {
+    const { container } = render(<ProductPhoto productId={productId} src="/original.png" alt={productId} glow="oklch(0.78 0.14 70)" capAnimation />);
+    expect(container.querySelectorAll(`img[src="${profile.uncapped}"]`)).toHaveLength(2);
+    expect(container.querySelectorAll(`img[src="${profile.background}"]`)).toHaveLength(2);
+    expect(container.querySelectorAll(".photo-cap")).toHaveLength(2);
+    expect((container.firstElementChild as HTMLElement).style.getPropertyValue("--cap-clip")).toBe(profile.capClip);
   });
 });
