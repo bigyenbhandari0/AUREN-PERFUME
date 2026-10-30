@@ -38,20 +38,35 @@ export const EMBER_UNCAPPED = capProfiles["ember-veil"]!.uncapped;
 export const EMBER_BACKGROUND = capProfiles["ember-veil"]!.background;
 const cache = new Map<string, Promise<boolean>>();
 
-/** Cache one decode per product; failed assets retain the original photograph. */
+function decodeLayer(src: string): Promise<void> {
+  const image = new Image();
+  const loaded = new Promise<void>((resolve, reject) => {
+    image.onload = () => resolve();
+    image.onerror = () => reject(new Error("Fragrance image unavailable"));
+  });
+  // Some mobile browsers reject decode() even when the image loads normally.
+  void loaded.catch(() => {});
+  image.src = src;
+  return typeof image.decode === "function" ? image.decode().catch(() => loaded) : loaded;
+}
+
+/** Share successful loads; let slow or failed mobile loads retry on the next visit. */
 export function preloadPerfumeCap(id: string): Promise<boolean> {
   const profile = capProfiles[id];
   if (!profile) return Promise.resolve(false);
-  if (!cache.has(id)) cache.set(id, (async () => {
+  const existing = cache.get(id);
+  if (existing) return existing;
+  const pending = (async () => {
     let timeout: ReturnType<typeof setTimeout> | undefined;
     try {
-      const images = [profile.uncapped, profile.background].map((src) => { const image = new Image(); image.src = src; return image; });
       return await Promise.race([
-        Promise.all(images.map((image) => image.decode())).then(() => true),
-        new Promise<boolean>((resolve) => { timeout = setTimeout(() => resolve(false), 2500); }),
+        Promise.all([profile.uncapped, profile.background].map(decodeLayer)).then(() => true),
+        new Promise<boolean>((resolve) => { timeout = setTimeout(() => resolve(false), 15000); }),
       ]);
     } catch { return false; }
     finally { if (timeout) clearTimeout(timeout); }
-  })());
-  return cache.get(id)!;
+  })();
+  cache.set(id, pending);
+  void pending.then((success) => { if (!success && cache.get(id) === pending) cache.delete(id); });
+  return pending;
 }

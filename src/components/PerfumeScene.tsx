@@ -17,6 +17,7 @@ function RoomBackground() {
 }
 
 export function PerfumeScene({ onAdd, homeSignal }: Props) {
+  const [loadingId, setLoadingId] = useState<string | null>(null);
   const [capReady, setCapReady] = useState<Record<string, boolean>>({});
   const [phase, setPhase] = useState<Phase>("collection");
   const [index, setIndex] = useState(0);
@@ -57,11 +58,13 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
     const scene = room.current;
     if (busy.current || phase !== "collection" || !element || !perfume || !plane || !scene) return;
     busy.current = true;
+    setLoadingId(perfume.id);
     const image = element.querySelector("img");
     try { if (image && (!image.complete || !image.naturalWidth)) await image.decode(); } catch { /* The loaded image can still be displayed. */ }
     const ready = await preloadPerfumeCap(perfume.id);
     if (mounted.current) setCapReady((current) => ({ ...current, [perfume.id]: ready }));
     if (!mounted.current) return;
+    setLoadingId(null);
     const bounds = scene.getBoundingClientRect();
     baseRects.current = sources.current.map((source) => {
       const rect = source?.querySelector(".photo-niche-original")?.getBoundingClientRect() ?? source?.getBoundingClientRect();
@@ -222,10 +225,11 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
               className={`collection-niche ${position === i ? "touch-active" : ""} ${phase !== "collection" && index === i ? "selected-niche" : ""}`}
               onBlur={(event) => event.currentTarget.removeAttribute("data-restored-focus")}
               onKeyDown={(event) => event.currentTarget.removeAttribute("data-restored-focus")}
-              aria-label={`Discover ${perfume.name}`} aria-haspopup="dialog" onClick={() => open(i)}>
+              aria-label={`Discover ${perfume.name}`} aria-busy={loadingId === perfume.id} aria-haspopup="dialog" onClick={() => open(i)}>
               <div ref={(el) => { sources.current[i] = el; }} className="niche-image-box">
                 <ProductPhoto productId={perfume.id} capAnimation={!!capReady[perfume.id]} src={perfumeImages[perfume.id] ?? ""} alt={`${perfume.name} perfume in an illuminated stone niche`} glow={perfume.glow} loading="eager" />
               </div>
+              {loadingId === perfume.id && <span className="fragrance-loading" role="status">Opening fragrance…</span>}
               <span className="niche-caption"><span>{perfume.name}</span><span className="niche-discover">Discover <ArrowRight size={11} /></span></span>
             </Button>
           ))}
