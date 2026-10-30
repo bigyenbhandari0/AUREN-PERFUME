@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useLayoutEffect, useRef, useState, type MouseEvent } from "react";
+import { CollectionReveal } from "@/components/CollectionReveal";
 import { PerfumeScene } from "@/components/PerfumeScene";
 import { Button } from "@/components/ui/button";
 import { perfumes, formatNPR } from "@/lib/perfumes";
@@ -28,6 +29,7 @@ function Index() {
   useLayoutEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
   }, []);
+  const [introActive, setIntroActive] = useState(false);
   const cart = useCart();
   const [bagOpen, setBagOpen] = useState(false);
   const [homeSignal, setHomeSignal] = useState(0);
@@ -60,6 +62,8 @@ function Index() {
 
   return (
     <div id="top" className="stone min-h-screen text-foreground" onClick={navigateSection}>
+      <CollectionReveal onActive={setIntroActive} />
+      <div inert={introActive}>
       <Header count={cart.count} onBag={() => setBagOpen(true)} onHome={() => setHomeSignal((value) => value + 1)} />
       <main>
         <PerfumeScene homeSignal={homeSignal} onAdd={(id, size) => { cart.add(id, size); setBagOpen(true); }} />
@@ -68,6 +72,7 @@ function Index() {
       <Footer />
 
       <Bag open={bagOpen} onClose={() => setBagOpen(false)} cart={cart} />
+      </div>
     </div>
   );
 }

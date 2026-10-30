@@ -730,3 +730,28 @@ html { scroll-behavior: smooth; }
 
 .fragrance-loading { position: absolute; left: 0; right: 0; top: calc(var(--display-height) - 12px); text-align: center; color: var(--primary); font-size: 9px; letter-spacing: 0.12em; pointer-events: none; }
 @media (max-width: 767px) { .fragrance-loading { font-size: 7px; letter-spacing: 0.04em; } }
+
+/* First-visit cabinet reveal: lightweight opaque panels, no live blur. */
+.collection-reveal { position: fixed; inset: 0; z-index: 100; visibility: hidden; pointer-events: none; overflow: hidden; }
+.collection-unveiling .collection-reveal { visibility: visible; pointer-events: auto; }
+html.collection-unveiling { overflow: hidden; }
+.reveal-panel { position: absolute; top: 0; bottom: 0; width: calc(50% + 1px); background: radial-gradient(ellipse at 100% 45%, oklch(0.19 0.012 70), transparent 75%), repeating-linear-gradient(90deg, transparent 0 68px, oklch(0.8 0.04 80 / 3%) 69px, transparent 70px), oklch(0.075 0.003 60); }
+.reveal-panel::after { content: ""; position: absolute; top: 7%; bottom: 7%; width: 1px; background: linear-gradient(transparent, oklch(0.86 0.06 80 / 55%), transparent); }
+.reveal-panel-left { left: 0; border-right: 1px solid oklch(0.86 0.06 80 / 25%); }
+.reveal-panel-right { right: 0; background-position: right; border-left: 1px solid oklch(0.86 0.06 80 / 25%); }
+.reveal-panel-left::after { right: 20px; }
+.reveal-panel-right::after { left: 20px; }
+.collection-unveiling .reveal-panel-left { animation: cabinet-left 1450ms cubic-bezier(0.76, 0, 0.24, 1) 300ms both; }
+.collection-unveiling .reveal-panel-right { animation: cabinet-right 1450ms cubic-bezier(0.76, 0, 0.24, 1) 300ms both; }
+.reveal-title { position: absolute; top: 43%; left: 7%; right: 7%; text-align: center; color: var(--foreground); }
+.reveal-title > span { font-size: 9px; text-transform: uppercase; letter-spacing: 0.3em; color: var(--primary); }
+.reveal-title p { font-family: var(--font-serif); font-size: clamp(32px, 4.5vw, 64px); line-height: 1.1; margin-top: 18px; }
+.reveal-title em { color: var(--primary); }
+.reveal-title i { display: block; width: 70px; height: 1px; background: var(--primary); margin: 24px auto; opacity: 0.6; }
+.collection-unveiling .reveal-title { animation: cabinet-title 700ms ease 0ms both; }
+.reveal-skip { position: absolute; right: 6%; bottom: max(28px, env(safe-area-inset-bottom)); color: var(--muted-foreground); font-size: 10px; text-transform: uppercase; letter-spacing: 0.15em; padding: 14px; cursor: pointer; }
+@keyframes cabinet-left { to { transform: translateX(-100%); } }
+@keyframes cabinet-right { to { transform: translateX(100%); } }
+@keyframes cabinet-title { 0%, 40% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-8px); } }
+@media (max-width: 767px) { .reveal-title { top: 40%; } .reveal-title > span { font-size: 7px; letter-spacing: 0.2em; } .reveal-panel-left::after { right: 10px; } .reveal-panel-right::after { left: 10px; } }
+@media (prefers-reduced-motion: reduce) { .collection-reveal { display: none; } html.collection-unveiling { overflow: auto; } }
