@@ -132,12 +132,12 @@
   overflow: visible;
   width: 100%;
   height: 100%;
-  --photo-brightness: 1.07;
-  --beam-opacity: 0.85;
-  --pool-opacity: 0.75;
+  --photo-brightness: 1;
+  --beam-opacity: 0.28;
+  --pool-opacity: 0.25;
+  --beam-spread: 0.8;
   container-type: inline-size;
   --light: color-mix(in oklab, var(--foreground) 92%, var(--glow));
-  mask-image: linear-gradient(90deg, transparent, var(--foreground) 9%, var(--foreground) 91%, transparent);
 }
 
 @utility photo-niche-img {
@@ -157,7 +157,9 @@
   inset: 0;
   pointer-events: none;
   opacity: var(--beam-opacity);
-  transition: opacity 550ms ease-in-out;
+  transform: scaleX(var(--beam-spread));
+  transform-origin: 50% 2%;
+  transition: opacity 550ms ease-in-out, transform 550ms ease-in-out;
   background:
     radial-gradient(ellipse 65% 60% at 50% 38%, color-mix(in oklab, var(--light) 22%, transparent), transparent 85%),
     conic-gradient(from 151deg at 50% 2%, transparent 0deg, color-mix(in oklab, var(--light) 12%, transparent) 12deg, color-mix(in oklab, var(--light) 32%, transparent) 29deg, color-mix(in oklab, var(--light) 12%, transparent) 46deg, transparent 58deg);
@@ -175,7 +177,8 @@
   height: 16%;
   pointer-events: none;
   opacity: var(--pool-opacity);
-  transition: opacity 550ms ease-in-out;
+  transform: scaleX(var(--beam-spread));
+  transition: opacity 550ms ease-in-out, transform 550ms ease-in-out;
   background: radial-gradient(
     ellipse 50% 50% at 50% 50%,
     color-mix(in oklab, var(--light) 42%, transparent),
@@ -183,12 +186,30 @@
   );
 }
 
-.collection-niche:hover .photo-niche,
 .collection-niche:focus-visible .photo-niche,
 .selected-niche .photo-niche {
-  --photo-brightness: 1.16;
-  --beam-opacity: 1;
-  --pool-opacity: 1;
+  --photo-brightness: 1.12;
+  --beam-opacity: 0.78;
+  --pool-opacity: 0.7;
+  --beam-spread: 1.2;
+}
+@media (hover: hover) and (pointer: fine) {
+  .collection-niche:hover .photo-niche {
+    --photo-brightness: 1.12;
+    --beam-opacity: 0.78;
+    --pool-opacity: 0.7;
+    --beam-spread: 1.2;
+  }
+  .collection-niche:hover .niche-caption { opacity: 1; transform: translateY(0); }
+}
+@media (hover: none) {
+  .touch-active .photo-niche {
+    --photo-brightness: 1.12;
+    --beam-opacity: 0.78;
+    --pool-opacity: 0.7;
+    --beam-spread: 1.2;
+  }
+  .touch-active .niche-caption { opacity: 1; transform: translateY(0); }
 }
 
 :root {
@@ -199,10 +220,10 @@
   --reflection-ink: oklch(0.94 0.02 85 / 50%);
   --contact-shadow: oklch(0.04 0 0 / 75%);
 }
-.photo-niche-original { position: absolute; bottom: 0; left: 0; width: 100%; height: 150cqw; overflow: hidden; clip-path: inset(0 0 13%); }
+.photo-niche-original { position: absolute; bottom: 0; left: 0; width: 100%; height: 150cqw; overflow: hidden; clip-path: inset(0 0 13%); mask-image: linear-gradient(90deg, transparent, var(--foreground) 9%, var(--foreground) 91%, transparent); }
 .photo-niche-original > .photo-niche-source { visibility: hidden; }
 .photo-overhead-light { mask-image: linear-gradient(to bottom, var(--foreground), var(--foreground) 35%, transparent 85%); }
-.photo-floor-mirror { position: absolute; top: calc(100% - 19.5cqw); left: 0; width: 100%; height: 37.5cqw; overflow: hidden; pointer-events: none; mask-image: linear-gradient(to bottom, var(--reflection-ink), color-mix(in oklab, var(--reflection-ink) 35%, transparent) 55%, transparent); }
+.photo-floor-mirror { position: absolute; top: calc(100% - 19.5cqw); left: 0; width: 100%; height: 56cqw; overflow: hidden; pointer-events: none; mask-image: linear-gradient(to bottom, var(--reflection-ink), color-mix(in oklab, var(--reflection-ink) 70%, transparent) 35%, color-mix(in oklab, var(--reflection-ink) 25%, transparent) 72%, transparent); }
 .photo-floor-mirrored-layers { position: absolute; width: 100%; height: 150cqw; top: -19.5cqw; transform: scaleY(-1); transform-origin: center; filter: blur(0.5px); }
 .photo-floor-mirror::after { content: ""; position: absolute; inset: 35% 0 0; backdrop-filter: blur(2px); mask-image: linear-gradient(to bottom, transparent, var(--foreground)); }
 .photo-contact-shadow { position: absolute; top: calc(100% - 19.5cqw); left: 25%; width: 50%; height: 2%; background: radial-gradient(ellipse, var(--contact-shadow), transparent 75%); pointer-events: none; }
@@ -219,10 +240,18 @@
 .boutique-header > a { font-size: 24px; }
 body:has(.detail-room) .boutique-header { position: fixed; }
 .boutique-header button { border: 0; padding: 0 8px; }
-.gallery-room { position: relative; isolation: isolate; height: 100svh; min-height: 690px; background: var(--scene-dark); }
+.gallery-room {
+  --gallery-top: clamp(124px, 18svh, 180px);
+  --display-height: clamp(360px, 52svh, 640px);
+  --floor-tail: 5.037vw;
+  position: relative; isolation: isolate;
+  height: calc(var(--gallery-top) + var(--display-height) + var(--floor-tail) + 152px);
+  background: var(--scene-dark);
+}
 .camera-viewport { position: absolute; inset: 0; overflow: hidden; }
 .camera-world { position: absolute; inset: 0; transform-origin: 0 0; isolation: isolate; }
 .gallery-room:not(.phase-collection) .camera-viewport { position: fixed; z-index: 39; }
+.gallery-room:not(.phase-collection) { z-index: 40; }
 .gallery-room:not(.phase-collection) .camera-world { inset: auto; top: 0; left: 0; will-change: transform; }
 .collection-editorial { position: absolute; inset: 0; pointer-events: none; }
 .room-background { position: absolute; inset: 0; z-index: -1; overflow: hidden; background: var(--scene-dark); }
@@ -231,23 +260,24 @@ body:has(.detail-room) .boutique-header { position: fixed; }
 .room-floor { position: absolute; inset: 70% 0 0; background: linear-gradient(180deg, transparent, var(--scene-floor)); border-top: 1px solid var(--border); opacity: 0.45; }
 .collection-content { height: 100%; }
 .niche-gallery {
-  position: absolute; top: 18%; left: 4%; right: 4%;
+  position: absolute; top: var(--gallery-top); left: 4%; right: 4%;
   display: flex; justify-content: space-between; align-items: flex-start;
 }
 .collection-niche {
-  display: flex; flex-direction: column; gap: 0; width: 15%; height: auto;
-  padding: 0; border: 0; border-radius: 0; background: transparent;
+  position: relative; display: flex; flex-direction: column; gap: 0; width: 15%; height: auto;
+  padding: 0 0 var(--floor-tail); border: 0; border-radius: 0; background: transparent;
   font-weight: 400; white-space: normal; transition: opacity 550ms ease-in-out;
 }
 .collection-niche:hover, .collection-niche:focus-visible { background: transparent; }
-.niche-image-box { width: 100%; height: 52svh; min-height: 360px; }
-.niche-caption { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 7px; padding-top: 14px; font-family: var(--font-serif); font-size: 19px; }
+.niche-image-box { width: 100%; height: var(--display-height); min-height: 360px; }
+.niche-caption { position: absolute; top: 24px; left: 0; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 7px; font-family: var(--font-serif); font-size: 19px; opacity: 0; transform: translateY(6px); transition: opacity 300ms ease, transform 300ms ease; pointer-events: none; }
+.collection-niche:focus-visible .niche-caption { opacity: 1; transform: translateY(0); }
 .niche-discover { display: flex; align-items: center; gap: 5px; font-family: var(--font-sans); color: var(--muted-foreground); font-size: 8px; text-transform: uppercase; letter-spacing: 0.16em; }
 @media (hover: hover) {
   .niche-gallery:has(.collection-niche:hover) .collection-niche:not(:hover) { opacity: 0.58; }
 }
 .niche-gallery:has(.collection-niche:focus-visible) .collection-niche:not(:focus-visible) { opacity: 0.58; }
-.collection-lockup { position: absolute; bottom: 7%; left: 4%; }
+.collection-lockup { position: absolute; top: calc(var(--gallery-top) + var(--display-height) + var(--floor-tail) + 20px); left: 4%; }
 .collection-lockup p { font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted-foreground); }
 .collection-lockup h1 { font-family: var(--font-serif); font-size: 34px; line-height: 1.15; margin: 9px 0; font-weight: 400; }
 .collection-lockup em { color: var(--primary); }
@@ -256,7 +286,7 @@ body:has(.detail-room) .boutique-header { position: fixed; }
 .gallery-room:not(.phase-collection) .collection-niche { opacity: 1; }
 .phase-opening .collection-niche:not(.selected-niche), .phase-detail .collection-niche:not(.selected-niche) { opacity: 0; transition: opacity 300ms 650ms; }
 .phase-closing .collection-niche:not(.selected-niche) { opacity: 1; transition: opacity 600ms; }
-.gallery-room:not(.phase-collection) .niche-caption { opacity: 0; transition: opacity 150ms; }
+.gallery-room:not(.phase-collection) .collection-niche .niche-caption { opacity: 0; transform: translateY(6px); transition: none; }
 .phase-opening .collection-lockup, .phase-detail .collection-lockup { opacity: 0; transition: opacity 250ms; }
 .phase-closing .collection-lockup { opacity: 1; transition: opacity 300ms 550ms; }
 .detail-room { position: fixed; inset: 0; z-index: 40; isolation: isolate; overflow-y: auto; background: transparent; pointer-events: none; }
@@ -287,14 +317,14 @@ body:has(.detail-room) .boutique-header { position: fixed; }
 
 @media (max-width: 767px) {
   .boutique-header { padding: 12px 20px; }
-  .gallery-room { height: 100svh; min-height: 720px; }
-  .niche-gallery { top: 13%; left: 0; right: 0; padding-inline: 12%; gap: 24px; justify-content: flex-start; overflow-x: auto; scroll-snap-type: x mandatory; }
+  .gallery-room { --gallery-top: 100px; --display-height: max(400px, 58svh); --floor-tail: 27.74vw; }
+  .niche-gallery { left: 0; right: 0; padding-inline: 12%; gap: 24px; justify-content: flex-start; overflow-x: auto; scroll-snap-type: x mandatory; }
   .collection-niche { width: 76vw; flex-shrink: 0; scroll-snap-align: center; }
-  .niche-image-box { height: 58svh; min-height: 400px; }
+  .niche-image-box { min-height: 400px; }
   .niche-caption { font-size: 23px; }
-  .collection-lockup { bottom: 6%; left: 6%; right: 6%; }
+  .collection-lockup { left: 6%; right: 6%; top: calc(var(--gallery-top) + var(--display-height) + var(--floor-tail) + 24px); }
   .collection-lockup h1 { font-size: 30px; }
-  .gallery-position { position: absolute; bottom: 20%; left: 6%; display: flex; gap: 7px; }
+  .gallery-position { position: absolute; top: calc(var(--gallery-top) + var(--display-height) + var(--floor-tail) + 6px); left: 6%; display: flex; gap: 7px; }
   .gallery-position span { width: 14px; height: 1px; background: var(--muted-foreground); }
   .gallery-position .current { width: 28px; background: var(--primary); }
   .detail-layout { display: flex; flex-direction: column; padding: 76px 6% 40px; gap: 20px; }
