@@ -10,13 +10,7 @@ type Props = {
   loading?: "lazy" | "eager";
 };
 
-/**
- * A perfume photograph in its display niche. The lighting is baked into the
- * photograph; hover/focus only brightens it slightly and fades in a soft,
- * tinted overhead glow plus a faint light pool near the base. Pointer
- * tracking nudges the glow center via CSS variables (rAF, no re-renders),
- * and only on devices with hover + fine pointer.
- */
+/** The complete photograph with fixed overhead, stone and shelf light layers. */
 export function ProductPhoto({ src, alt, glow, className = "", imgClassName = "", loading = "lazy" }: Props) {
   return (
     <div
