@@ -223,7 +223,7 @@
   --reflection-ink: oklch(0.94 0.02 85 / 50%);
   --contact-shadow: oklch(0.04 0 0 / 75%);
 }
-.photo-niche-original { position: absolute; bottom: 0; left: 0; width: 100%; height: 150cqw; overflow: hidden; mask-image: linear-gradient(90deg, transparent, var(--foreground) 14%, var(--foreground) 86%, transparent), linear-gradient(to bottom, transparent, var(--foreground) 12%, var(--foreground) 73%, color-mix(in oklab, var(--foreground) 65%, transparent) 81%, transparent 90%); mask-composite: intersect; }
+.photo-niche-original { position: absolute; bottom: 0; left: 0; width: 100%; height: 150cqw; overflow: hidden; mask-image: linear-gradient(90deg, transparent, var(--foreground) 14%, var(--foreground) 86%, transparent), linear-gradient(to bottom, transparent, var(--foreground) 12%, var(--foreground) 72%, color-mix(in oklab, var(--foreground) 50%, transparent) 79%, transparent 87%); mask-composite: intersect; }
 .photo-niche-original > .photo-niche-source { visibility: hidden; }
 /* Keep atmospheric light above the bottle rather than washing out its label. */
 .photo-niche-original > .photo-niche-light { opacity: calc(var(--beam-opacity) * 0.12); }
@@ -234,9 +234,16 @@
 .phase-detail .camera-world { will-change: auto !important; }
 .phase-detail .collection-niche:not(.selected-niche) { visibility: hidden; }
 .phase-detail .selected-niche .photo-niche { --photo-brightness: 1; --beam-opacity: 0.42; --pool-opacity: 0.4; }
-.photo-floor-mirror { position: absolute; top: calc(100% - 19.5cqw); left: 0; width: 100%; height: 84cqw; overflow: hidden; pointer-events: none; mask-composite: intersect; mask-image: linear-gradient(90deg, transparent, var(--foreground) 14%, var(--foreground) 86%, transparent), linear-gradient(to bottom, transparent, var(--reflection-ink) 9%, color-mix(in oklab, var(--reflection-ink) 70%, transparent) 35%, color-mix(in oklab, var(--reflection-ink) 25%, transparent) 72%, transparent); }
+.photo-floor-mirror { position: absolute; top: calc(100% - 19.5cqw); left: 0; width: 100%; height: 84cqw; overflow: hidden; pointer-events: none; mask-composite: intersect; mask-image: linear-gradient(90deg, transparent, var(--foreground) 14%, var(--foreground) 86%, transparent), linear-gradient(to bottom, transparent 0%, color-mix(in oklab, var(--reflection-ink) 25%, transparent) 6%, var(--reflection-ink) 18%, color-mix(in oklab, var(--reflection-ink) 70%, transparent) 35%, color-mix(in oklab, var(--reflection-ink) 25%, transparent) 72%, transparent); }
 .photo-floor-mirrored-layers { position: absolute; width: 100%; height: 150cqw; top: -19.5cqw; transform: scaleY(-1); transform-origin: center; filter: blur(0.5px); }
-/* Reflection already has a static softening pass; avoid backdrop sampling. */
+/* Feather only the shelf join, leaving bottle pixels untouched. */
+.photo-niche::after {
+  content: ""; position: absolute; pointer-events: none;
+  top: calc(100% - 19.5cqw); left: 0; right: 0;
+  height: 10cqw; transform: translateY(-50%);
+  background: linear-gradient(to bottom, transparent, color-mix(in oklab, var(--scene-dark) 48%, transparent) 50%, transparent);
+  mask-image: linear-gradient(90deg, transparent, var(--foreground) 15%, var(--foreground) 85%, transparent);
+}
 .photo-contact-shadow { position: absolute; top: calc(100% - 19.5cqw); left: 25%; width: 50%; height: 2%; background: radial-gradient(ellipse, var(--contact-shadow), transparent 75%); pointer-events: none; }
 .photo-niche-source {
   opacity: var(--beam-opacity); transition: opacity 550ms ease-in-out;
