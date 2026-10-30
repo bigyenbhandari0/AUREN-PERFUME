@@ -16,10 +16,10 @@ type Props = {
 function PhotoLayers({ src, alt, imgClassName, loading, capAnimation, productId = "ember-veil" }: Pick<Props, "src" | "alt" | "imgClassName" | "loading" | "capAnimation" | "productId">) {
   const profile = capAnimation ? capProfiles[productId] : undefined;
   return <>
-    <img src={profile?.background ?? src} alt={profile ? "" : alt} loading={loading} decoding="async" draggable={false} className={`photo-niche-img ${imgClassName ?? ""}`} />
+    <img src={profile?.background ?? src} alt={profile ? "" : alt} loading={loading} decoding={profile ? "sync" : "async"} draggable={false} className={`photo-niche-img ${imgClassName ?? ""}`} />
     {profile && <div className="photo-product-rig">
-      <img src={profile.uncapped} alt={alt} decoding="async" draggable={false} className="photo-bottle" />
-      <img src={src} alt="" aria-hidden="true" decoding="async" draggable={false} className="photo-cap" />
+      <img src={profile.uncapped} alt={alt} decoding="sync" draggable={false} className="photo-bottle" />
+      <img src={src} alt="" aria-hidden="true" decoding="sync" draggable={false} className="photo-cap" />
     </div>}
     <div className="photo-niche-light" aria-hidden />
     <div className="photo-niche-source" aria-hidden />
