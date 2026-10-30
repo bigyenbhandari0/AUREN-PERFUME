@@ -76,6 +76,10 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
     const panel = destination.current.closest("[role=dialog]");
     if (panel instanceof HTMLElement) panel.scrollTop = 0;
     if (world.current) world.current.style.translate = "";
+    // Land from the exact current hover pose rather than restarting the loop.
+    world.current?.querySelectorAll<HTMLElement>(".selected-niche .photo-product-rig, .selected-niche .photo-cap").forEach((element) => {
+      element.style.setProperty("--return-pose", getComputedStyle(element).transform);
+    });
     setPhase("closing");
   };
 
