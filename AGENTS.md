@@ -9,5 +9,5 @@
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
 
-- Keep the boutique's collection/detail state and measured native Web Animations transitions in PerfumeScene; one guarded phase model prevents competing transitions without another router.
-- ProductPhoto owns anchored photographic spotlight layers; keep photograph proportions intact and use the existing asset pointers.
+- Keep the boutique's collection/detail state and uniform native Web Animations camera transforms in PerfumeScene; a persistent world and guarded phase model carry original niches without overlay duplicates or another router.
+- ProductPhoto owns anchored photographic spotlight layers and a CSS floor mirror of those same layers; shared inherited lighting states keep reflections synchronized while existing asset pointers and photograph proportions remain intact.

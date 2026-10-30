@@ -1,4 +1,4 @@
-# Layout correction
-- [x] Recompose collection and detail as one architectural room.
-- [x] Add anchored spotlights and reversible shared-photograph transitions.
-- [x] Verify desktop/mobile, repeated transitions and preserved shopping behavior.
+# Transition, lighting and reflections
+- [x] Replace overlay transitions with a persistent, reversible camera scene.
+- [x] Broaden anchored lighting and add synchronized photographic floor mirrors (DOM approximation).
+- [x] Verify forward/reverse movement, shopping and reduced motion on desktop/mobile.
