@@ -1,7 +1,7 @@
 import { cleanup, render } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { ProductPhoto } from "@/components/ProductPhoto";
-import { EMBER_UNCAPPED } from "@/lib/cap-animation";
+import { EMBER_UNCAPPED, EMBER_BACKGROUND } from "@/lib/cap-animation";
 
 afterEach(cleanup);
 describe("Ember cap layers", () => {
@@ -10,6 +10,9 @@ describe("Ember cap layers", () => {
     expect(container.querySelectorAll(`img[src="${EMBER_UNCAPPED}"]`)).toHaveLength(2);
     const caps = container.querySelectorAll(".photo-cap");
     expect(caps).toHaveLength(2);
+    expect(container.querySelectorAll(".photo-product-rig .photo-bottle")).toHaveLength(2);
+    expect(container.querySelectorAll(`img[src="${EMBER_BACKGROUND}"]`)).toHaveLength(2);
+    caps.forEach((cap) => expect(cap.closest(".photo-product-rig")).not.toBeNull());
     caps.forEach((cap) => expect(cap).toHaveAttribute("src", "/original.png"));
   });
   it("keeps other products intact and provides a closed-bottle fallback", () => {

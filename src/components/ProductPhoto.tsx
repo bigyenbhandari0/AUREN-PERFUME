@@ -1,5 +1,5 @@
 import { type CSSProperties } from "react";
-import { EMBER_UNCAPPED } from "@/lib/cap-animation";
+import { EMBER_UNCAPPED, EMBER_BACKGROUND } from "@/lib/cap-animation";
 
 type Props = {
   src: string;
@@ -14,8 +14,11 @@ type Props = {
 
 function PhotoLayers({ src, alt, imgClassName, loading, capAnimation }: Pick<Props, "src" | "alt" | "imgClassName" | "loading" | "capAnimation">) {
   return <>
-    <img src={capAnimation ? EMBER_UNCAPPED : src} alt={alt} loading={loading} decoding="async" draggable={false} className={`photo-niche-img ${imgClassName ?? ""}`} />
-    {capAnimation && <img src={src} alt="" aria-hidden="true" decoding="async" draggable={false} className="photo-cap" />}
+    <img src={capAnimation ? EMBER_BACKGROUND : src} alt={capAnimation ? "" : alt} loading={loading} decoding="async" draggable={false} className={`photo-niche-img ${imgClassName ?? ""}`} />
+    {capAnimation && <div className="photo-product-rig">
+      <img src={EMBER_UNCAPPED} alt={alt} decoding="async" draggable={false} className="photo-bottle" />
+      <img src={src} alt="" aria-hidden="true" decoding="async" draggable={false} className="photo-cap" />
+    </div>}
     <div className="photo-niche-light" aria-hidden />
     <div className="photo-niche-source" aria-hidden />
     <div className="photo-niche-pool" aria-hidden />
