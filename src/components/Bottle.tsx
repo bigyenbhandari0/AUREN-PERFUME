@@ -10,11 +10,11 @@ export function Bottle({ id, name, className }: Props) {
     <g>
       <rect x={x} y={y} width={w} height={h} rx={1.5} fill={dark ? "#1b1414" : "#efe6d6"} opacity={0.94} />
       <rect x={x + 3} y={y + 3} width={w - 6} height={h - 6} rx={1} fill="none" stroke={dark ? "#b89a6a" : "#8a7458"} strokeWidth={0.5} />
-      <text x={x + w / 2} y={y + h * 0.42} textAnchor="middle" fontFamily="Cormorant Garamond, serif" fontSize={7} letterSpacing={1.4} fill={dark ? "#d9c39a" : "#3a2e22"}>
+      <text x={x + w / 2} y={y + h * 0.42} textAnchor="middle" fontFamily="Cormorant Garamond, serif" fontSize={5.2} letterSpacing={0.8} fill={dark ? "#d9c39a" : "#3a2e22"}>
         YOUR PRODUCT
       </text>
       <line x1={x + w * 0.3} x2={x + w * 0.7} y1={y + h * 0.55} y2={y + h * 0.55} stroke={dark ? "#b89a6a" : "#8a7458"} strokeWidth={0.4} />
-      <text x={x + w / 2} y={y + h * 0.78} textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={4.6} letterSpacing={1.2} fill={dark ? "#cdb68e" : "#5a4a38"}>
+      <text x={x + w / 2} y={y + h * 0.78} textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={3.8} letterSpacing={0.9} fill={dark ? "#cdb68e" : "#5a4a38"}>
         {name.toUpperCase()}
       </text>
     </g>
