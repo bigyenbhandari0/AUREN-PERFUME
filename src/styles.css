@@ -143,6 +143,7 @@
   height: 100%;
   object-fit: contain;
   object-position: center bottom;
+  mask-image: linear-gradient(to bottom, transparent, var(--foreground) 10%, var(--foreground) 92%, transparent);
   filter: brightness(1) contrast(1);
   transition: filter 550ms ease-in-out;
 }
@@ -212,6 +213,7 @@
   gap: 16px; padding: 14px 3%;
 }
 .boutique-header > a { font-size: 24px; }
+body:has(.detail-room) .boutique-header { position: fixed; }
 .boutique-header button { border: 0; padding: 0 8px; }
 .gallery-room { position: relative; isolation: isolate; height: 100svh; min-height: 690px; background: var(--scene-dark); }
 .room-background { position: absolute; inset: 0; z-index: -1; overflow: hidden; background: var(--scene-dark); }
@@ -243,6 +245,7 @@
 .collection-lockup > span { font-size: 10px; color: var(--muted-foreground); }
 .gallery-position { display: none; }
 .phase-opening .collection-niche, .phase-detail .collection-niche, .phase-closing .collection-niche { opacity: 0; transition-duration: 250ms; }
+.phase-closing .collection-niche:not(.selected-niche) { opacity: 1; transition: opacity 350ms 550ms; }
 .phase-opening .selected-niche, .phase-detail .selected-niche, .phase-closing .selected-niche { visibility: hidden; }
 .phase-opening .collection-lockup, .phase-detail .collection-lockup { opacity: 0; transition: opacity 250ms; }
 .phase-closing .collection-lockup { opacity: 1; transition: opacity 300ms 550ms; }
