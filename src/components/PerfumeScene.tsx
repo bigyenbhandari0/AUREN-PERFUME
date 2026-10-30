@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProductPhoto } from "@/components/ProductPhoto";
@@ -104,6 +105,15 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
     return () => { document.body.style.overflow = old; window.removeEventListener("keydown", onKey); };
   }, [phase, index]);
 
+  // Reset the fixed camera and its dimensions in the same commit as the collection.
+  // Clearing them before React commits exposes one frame in the old fixed viewport.
+  useLayoutEffect(() => {
+    if (phase !== "collection" || !world.current) return;
+    world.current.style.transform = "";
+    world.current.style.width = "";
+    world.current.style.height = "";
+  }, [phase]);
+
   useLayoutEffect(() => {
     if (phase !== "opening" && phase !== "closing") return;
     const plane = world.current;
@@ -122,11 +132,10 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
     animation.current = motion;
     motion.finished.then(() => {
       if (!mounted.current) return;
-      plane.style.transform = phase === "closing" ? "" : to;
-      if (phase === "closing") { plane.style.width = ""; plane.style.height = ""; }
-      motion.cancel();
+      plane.style.transform = to;
       busy.current = false;
-      setPhase(phase === "opening" ? "detail" : "collection");
+      flushSync(() => setPhase(phase === "opening" ? "detail" : "collection"));
+      motion.cancel();
       requestAnimationFrame(() => {
         if (phase === "opening") back.current?.focus({ preventScroll: true });
         else buttons.current[index]?.focus({ preventScroll: true });

@@ -114,6 +114,7 @@
 }
 
 @layer base {
+  html { scrollbar-gutter: stable; }
   html, body { overflow-x: hidden; }
   body { font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
   :focus-visible { outline: 1px solid var(--ring); outline-offset: 3px; }
@@ -163,7 +164,7 @@
   background:
     radial-gradient(ellipse 65% 60% at 50% 38%, color-mix(in oklab, var(--light) 22%, transparent), transparent 85%),
     conic-gradient(from 151deg at 50% 2%, transparent 0deg, color-mix(in oklab, var(--light) 12%, transparent) 12deg, color-mix(in oklab, var(--light) 32%, transparent) 29deg, color-mix(in oklab, var(--light) 12%, transparent) 46deg, transparent 58deg);
-  mask-image: linear-gradient(to bottom, var(--foreground), var(--foreground) 45%, transparent 96%);
+  mask-image: radial-gradient(ellipse 50% 70% at 50% 25%, var(--foreground) 20%, transparent 100%);
   filter: blur(10px);
 }
 
@@ -220,10 +221,10 @@
   --reflection-ink: oklch(0.94 0.02 85 / 50%);
   --contact-shadow: oklch(0.04 0 0 / 75%);
 }
-.photo-niche-original { position: absolute; bottom: 0; left: 0; width: 100%; height: 150cqw; overflow: hidden; clip-path: inset(0 0 13%); mask-image: linear-gradient(90deg, transparent, var(--foreground) 9%, var(--foreground) 91%, transparent); }
+.photo-niche-original { position: absolute; bottom: 0; left: 0; width: 100%; height: 150cqw; overflow: hidden; mask-image: linear-gradient(90deg, transparent, var(--foreground) 14%, var(--foreground) 86%, transparent), linear-gradient(to bottom, transparent, var(--foreground) 12%, var(--foreground) 76%, transparent 89%); mask-composite: intersect; }
 .photo-niche-original > .photo-niche-source { visibility: hidden; }
-.photo-overhead-light { mask-image: linear-gradient(to bottom, var(--foreground), var(--foreground) 35%, transparent 85%); }
-.photo-floor-mirror { position: absolute; top: calc(100% - 19.5cqw); left: 0; width: 100%; height: 84cqw; overflow: hidden; pointer-events: none; mask-image: linear-gradient(to bottom, var(--reflection-ink), color-mix(in oklab, var(--reflection-ink) 70%, transparent) 35%, color-mix(in oklab, var(--reflection-ink) 25%, transparent) 72%, transparent); }
+.photo-overhead-light { mask-image: radial-gradient(ellipse 50% 70% at 50% 20%, var(--foreground) 10%, transparent 100%); }
+.photo-floor-mirror { position: absolute; top: calc(100% - 19.5cqw); left: 0; width: 100%; height: 84cqw; overflow: hidden; pointer-events: none; mask-composite: intersect; mask-image: linear-gradient(90deg, transparent, var(--foreground) 14%, var(--foreground) 86%, transparent), linear-gradient(to bottom, var(--reflection-ink), color-mix(in oklab, var(--reflection-ink) 70%, transparent) 35%, color-mix(in oklab, var(--reflection-ink) 25%, transparent) 72%, transparent); }
 .photo-floor-mirrored-layers { position: absolute; width: 100%; height: 150cqw; top: -19.5cqw; transform: scaleY(-1); transform-origin: center; filter: blur(0.5px); }
 .photo-floor-mirror::after { content: ""; position: absolute; inset: 35% 0 0; backdrop-filter: blur(2px); mask-image: linear-gradient(to bottom, transparent, var(--foreground)); }
 .photo-contact-shadow { position: absolute; top: calc(100% - 19.5cqw); left: 25%; width: 50%; height: 2%; background: radial-gradient(ellipse, var(--contact-shadow), transparent 75%); pointer-events: none; }
@@ -271,7 +272,7 @@ body:has(.detail-room) .boutique-header { position: fixed; }
 }
 .collection-niche:hover, .collection-niche:focus-visible { background: transparent; }
 .niche-image-box { width: 100%; height: var(--display-height); min-height: 360px; }
-.niche-caption { position: absolute; top: calc(var(--display-height) - 150cqw + 32px); left: 0; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 7px; font-family: var(--font-serif); font-size: 19px; opacity: 0; transform: translateY(6px); transition: opacity 300ms ease, transform 300ms ease; pointer-events: none; }
+.niche-caption { position: absolute; top: calc(var(--display-height) - 150cqw - 20px); left: 0; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 7px; font-family: var(--font-serif); font-size: 19px; opacity: 0; transform: translateY(6px); transition: opacity 300ms ease, transform 300ms ease; pointer-events: none; }
 .collection-niche:focus-visible .niche-caption { opacity: 1; transform: translateY(0); }
 .niche-discover { display: flex; align-items: center; gap: 5px; font-family: var(--font-sans); color: var(--muted-foreground); font-size: 8px; text-transform: uppercase; letter-spacing: 0.16em; }
 @media (hover: hover) {
