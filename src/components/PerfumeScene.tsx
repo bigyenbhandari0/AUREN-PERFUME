@@ -209,7 +209,7 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
           if (phase === "detail" && world.current) world.current.style.translate = `0px ${-event.currentTarget.scrollTop}px`;
         }}>
         <div className="detail-layout">
-          <div className="detail-information" inert={phase !== "detail"}>
+          <div key={p.id} className="detail-information" inert={phase !== "detail"}>
             <p className="detail-edition">The after-dark collection</p>
             <p className="detail-eyebrow">{String(index + 1).padStart(2, "0")} / 05 — {p.character}</p>
             <h2>{p.name}</h2>

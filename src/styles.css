@@ -324,22 +324,44 @@ body:has(.detail-room) .boutique-header { position: fixed; }
 .back-control svg { width: 12px; }
 .detail-niche { height: 80svh; max-height: 1050px; width: 100%; }
 .niche-hidden { visibility: hidden; }
-.phase-opening .detail-information { animation: detail-enter 280ms 800ms both; }
+/* One continuous stagger survives the opening -> detail phase change. */
+.detail-room:not(.phase-closing) .detail-information > * {
+  animation: detail-text-reveal 700ms var(--ease-lux) both;
+  animation-delay: calc(700ms + var(--text-order, 0) * 85ms);
+}
+.detail-information > :nth-child(1) { --text-order: 0; }
+.detail-information > :nth-child(2) { --text-order: 1; }
+.detail-information > :nth-child(3) { --text-order: 2; }
+.detail-information > :nth-child(4) { --text-order: 3; }
+.detail-information > :nth-child(5) { --text-order: 4; }
+.detail-information > :nth-child(6) { --text-order: 5; }
+.detail-information > :nth-child(7) { --text-order: 6; }
+.detail-information > :nth-child(8) { --text-order: 7; }
+.detail-information > :nth-child(9) { --text-order: 8; }
+@keyframes detail-text-reveal {
+  from { opacity: 0; transform: translateY(16px); clip-path: inset(0 0 100% 0); }
+  to { opacity: 1; transform: translateY(0); clip-path: inset(-4px -4px -4px -4px); }
+}
 .phase-closing .detail-information { opacity: 0; transition: opacity 200ms; }
 @keyframes detail-enter { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 
 @media (max-width: 767px) {
   .boutique-header { padding: 12px 20px; }
-  .gallery-room { --gallery-top: 88px; --display-height: 190px; --floor-tail: 72px; height: calc(var(--gallery-top) + 2 * (var(--display-height) + var(--floor-tail)) + 140px); }
+  .gallery-room { --gallery-top: 88px; --display-height: 190px; --floor-tail: 72px; height: calc(var(--gallery-top) + 2 * var(--display-height) + var(--floor-tail) + 12px + 140px); }
   .niche-gallery { left: 5%; right: 5%; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0 6px; overflow: visible; }
   .collection-niche { width: 100%; grid-column: span 2; min-width: 0; min-height: 44px; }
-  .collection-niche:nth-child(-n+2) { grid-column: span 3; }
+  .collection-niche:nth-child(-n+2) { grid-column: span 3; padding-bottom: 12px; }
+  .photo-floor-mirror { transition: opacity 450ms ease; }
+  .phase-collection .collection-niche:nth-child(-n+2) .photo-floor-mirror,
+  .phase-collection .collection-niche:nth-child(-n+2) .photo-contact-shadow { opacity: 0; }
+  /* Touch/focus must never expose homepage captions on mobile. */
+  .collection-niche .niche-caption { display: none; }
   .niche-image-box { width: min(100%, 110px); height: var(--display-height); min-height: 0; }
   .niche-caption { top: 0; font-size: clamp(12px, 3.4vw, 16px); gap: 4px; }
   .niche-discover { font-size: 6px; letter-spacing: 0.1em; }
   .phase-detail .camera-viewport { pointer-events: none; }
   .detail-room.phase-detail { pointer-events: auto; }
-  .collection-lockup { left: 6%; right: 6%; top: calc(var(--gallery-top) + 2 * (var(--display-height) + var(--floor-tail)) + 12px); }
+  .collection-lockup { left: 6%; right: 6%; top: calc(var(--gallery-top) + 2 * var(--display-height) + var(--floor-tail) + 12px + 12px); }
   .collection-lockup h1 { font-size: 30px; }
   .gallery-position { display: none !important; position: absolute; top: calc(var(--gallery-top) + var(--display-height) + var(--floor-tail) + 6px); left: 6%; display: flex; gap: 7px; }
   .gallery-position span { width: 14px; height: 1px; background: var(--muted-foreground); }
@@ -427,5 +449,5 @@ body:has(.detail-room) .boutique-header { position: fixed; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 1ms !important; transition-duration: 1ms !important; scroll-behavior: auto !important; }
+  *, *::before, *::after { animation-duration: 1ms !important; animation-delay: 0ms !important; transition-duration: 1ms !important; scroll-behavior: auto !important; }
 }
