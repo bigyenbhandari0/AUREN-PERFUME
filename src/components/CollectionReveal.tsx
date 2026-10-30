@@ -6,7 +6,10 @@ export function CollectionReveal({ onActive }: { onActive: (active: boolean) => 
   useLayoutEffect(() => {
     const root = document.documentElement;
     if (!root.classList.contains("collection-unveiling")) return;
+    let finished = false;
     const finish = () => {
+      if (finished) return;
+      finished = true;
       root.classList.remove("collection-unveiling");
       try { sessionStorage.setItem("auren-collection-revealed", "1"); } catch { /* Storage can be unavailable in private browsing. */ }
       setActive(false);
@@ -15,10 +18,13 @@ export function CollectionReveal({ onActive }: { onActive: (active: boolean) => 
     finishRef.current = finish;
     setActive(true);
     onActive(true);
-    const timer = window.setTimeout(finish, 1850);
+    const timer = window.setTimeout(finish, 2700);
     const escape = (event: KeyboardEvent) => { if (event.key === "Escape") finish(); };
+    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const reduceMotion = () => { if (preference.matches) finish(); };
+    preference.addEventListener?.("change", reduceMotion);
     window.addEventListener("keydown", escape);
-    return () => { clearTimeout(timer); window.removeEventListener("keydown", escape); };
+    return () => { clearTimeout(timer); preference.removeEventListener?.("change", reduceMotion); window.removeEventListener("keydown", escape); };
   }, [onActive]);
   return (
     <div className="collection-reveal" aria-hidden={!active} inert={!active} aria-label="Collection introduction">

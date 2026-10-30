@@ -25,6 +25,8 @@ describe("Product scroll isolation", () => {
     render(<PerfumeScene homeSignal={0} onAdd={() => {}} />);
     fireEvent.click(screen.getByRole("button", { name: "Discover Ember Veil" }));
     await waitFor(() => expect(document.querySelector(".phase-detail")).not.toBeNull());
+    // Only the selected photograph uses animated cutouts; gallery photos stay intact.
+    expect(document.querySelectorAll(".photo-product-rig")).toHaveLength(2);
     expect(document.body.style.position).toBe("fixed");
     expect(document.documentElement.style.overflow).toBe("hidden");
     const dialog = screen.getByRole("dialog");
@@ -32,6 +34,7 @@ describe("Product scroll isolation", () => {
     expect((document.querySelector(".camera-world") as HTMLElement).style.translate).toBe("0px -180px");
     fireEvent.click(screen.getByRole("button", { name: "Back to collection" }));
     await waitFor(() => expect(document.querySelector(".phase-collection")).not.toBeNull());
+    expect(document.querySelectorAll(".photo-product-rig")).toHaveLength(0);
     expect(document.body.style.position).toBe("");
     expect(document.documentElement.style.overflow).toBe("");
     expect((document.querySelector(".camera-world") as HTMLElement).style.translate).toBe("");

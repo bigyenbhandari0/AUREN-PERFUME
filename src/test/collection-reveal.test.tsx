@@ -9,14 +9,19 @@ describe("Collection entrance", () => {
     const onActive = vi.fn();
     render(<CollectionReveal onActive={onActive} />);
     expect(onActive).toHaveBeenLastCalledWith(true);
-    act(() => { vi.advanceTimersByTime(1850); });
+    act(() => { vi.advanceTimersByTime(2699); });
+    expect(document.documentElement).toHaveClass("collection-unveiling");
+    act(() => { vi.advanceTimersByTime(1); });
     expect(document.documentElement).not.toHaveClass("collection-unveiling");
     expect(sessionStorage.getItem("auren-collection-revealed")).toBe("1");
     expect(onActive).toHaveBeenLastCalledWith(false);
   });
   it("allows immediate skipping", () => {
-    render(<CollectionReveal onActive={vi.fn()} />);
+    const onActive = vi.fn();
+    render(<CollectionReveal onActive={onActive} />);
     fireEvent.click(screen.getByRole("button", { name: /skip intro/i }));
     expect(document.documentElement).not.toHaveClass("collection-unveiling");
+    act(() => { vi.advanceTimersByTime(2700); });
+    expect(onActive.mock.calls.filter(([active]) => active === false)).toHaveLength(1);
   });
 });

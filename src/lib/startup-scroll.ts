@@ -12,7 +12,7 @@ export const startupScrollScript = `(() => {
     if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && window.sessionStorage.getItem("auren-collection-revealed") !== "1") {
       window.document.documentElement.classList.add("collection-unveiling");
       // Never leave the collection covered if hydration fails.
-      window.setTimeout(() => window.document.documentElement.classList.remove("collection-unveiling"), 3000);
+      window.setTimeout(() => window.document.documentElement.classList.remove("collection-unveiling"), 6000);
     }
   } catch { /* A blocked session store should not block the collection. */ }
   window.addEventListener("pageshow", (event) => { if (event.persisted) reset(); });

@@ -227,7 +227,7 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
               onKeyDown={(event) => event.currentTarget.removeAttribute("data-restored-focus")}
               aria-label={`Discover ${perfume.name}`} aria-busy={loadingId === perfume.id} aria-haspopup="dialog" onClick={() => open(i)}>
               <div ref={(el) => { sources.current[i] = el; }} className="niche-image-box">
-                <ProductPhoto productId={perfume.id} capAnimation={!!capReady[perfume.id]} src={perfumeImages[perfume.id] ?? ""} alt={`${perfume.name} perfume in an illuminated stone niche`} glow={perfume.glow} loading="eager" />
+                <ProductPhoto productId={perfume.id} capAnimation={phase !== "collection" && index === i && !!capReady[perfume.id]} src={perfumeImages[perfume.id] ?? ""} alt={`${perfume.name} perfume in an illuminated stone niche`} glow={perfume.glow} loading="eager" />
               </div>
               {loadingId === perfume.id && <span className="fragrance-loading" role="status">Opening fragrance…</span>}
               <span className="niche-caption"><span>{perfume.name}</span><span className="niche-discover">Discover <ArrowRight size={11} /></span></span>
