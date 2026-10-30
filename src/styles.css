@@ -134,11 +134,11 @@
   width: 100%;
   height: 100%;
   --photo-brightness: 0.96;
-  --beam-opacity: 0.16;
+  --beam-opacity: 0.09;
   --pool-opacity: 0.14;
   --beam-spread: 0.72;
   container-type: inline-size;
-  --light: color-mix(in oklab, var(--foreground) 92%, var(--glow));
+  --light: color-mix(in oklab, var(--foreground) 82%, var(--glow));
 }
 
 @utility photo-niche-img {
@@ -163,8 +163,8 @@
   transform-origin: 50% 2%;
   transition: opacity 110ms ease-out, transform 140ms ease-out;
   background:
-    radial-gradient(ellipse 22% 48% at 50% 18%, color-mix(in oklab, var(--light) 18%, transparent) 0%, color-mix(in oklab, var(--light) 7%, transparent) 45%, transparent 100%),
-    radial-gradient(ellipse 58% 65% at 50% 48%, color-mix(in oklab, var(--light) 11%, transparent) 0%, color-mix(in oklab, var(--light) 4%, transparent) 48%, transparent 100%);
+    radial-gradient(ellipse 22% 48% at 50% 18%, color-mix(in oklab, var(--light) 34%, transparent) 0%, color-mix(in oklab, var(--light) 12%, transparent) 42%, transparent 100%),
+    radial-gradient(ellipse 58% 65% at 50% 48%, color-mix(in oklab, var(--light) 16%, transparent) 0%, color-mix(in oklab, var(--light) 5%, transparent) 48%, transparent 100%);
   mask-image: linear-gradient(to bottom, transparent, var(--foreground) 8%, var(--foreground) 45%, transparent 90%), radial-gradient(ellipse 50% 70% at 50% 25%, var(--foreground) 20%, transparent 100%);
   mask-composite: intersect;
   /* Soft gradients supply the feathering without a live blur surface. */
@@ -184,7 +184,7 @@
   transition: opacity 110ms ease-out, transform 140ms ease-out;
   background: radial-gradient(
     ellipse 50% 50% at 50% 50%,
-    color-mix(in oklab, var(--light) 42%, transparent),
+    color-mix(in oklab, var(--light) 48%, transparent),
     transparent 95%
   );
 }
@@ -192,25 +192,25 @@
 .collection-niche:focus-visible:not([data-restored-focus]) .photo-niche,
 .selected-niche .photo-niche {
   --photo-brightness: 1.04;
-  --beam-opacity: 0.88;
-  --pool-opacity: 0.82;
-  --beam-spread: 1.12;
+  --beam-opacity: 1;
+  --pool-opacity: 0.9;
+  --beam-spread: 1.2;
 }
 @media (hover: hover) and (pointer: fine) {
   .collection-niche:hover .photo-niche {
     --photo-brightness: 1.04;
-    --beam-opacity: 0.88;
-    --pool-opacity: 0.82;
-    --beam-spread: 1.12;
+    --beam-opacity: 1;
+    --pool-opacity: 0.9;
+    --beam-spread: 1.2;
   }
   .collection-niche:hover .niche-caption { opacity: 1; transform: translateY(0); }
 }
 @media (hover: none) {
   .touch-active .photo-niche {
     --photo-brightness: 1.04;
-    --beam-opacity: 0.88;
-    --pool-opacity: 0.82;
-    --beam-spread: 1.12;
+    --beam-opacity: 1;
+    --pool-opacity: 0.9;
+    --beam-spread: 1.2;
   }
   .touch-active .niche-caption { opacity: 1; transform: translateY(0); }
 }
@@ -227,6 +227,8 @@
 .photo-niche-original > .photo-niche-source { visibility: hidden; }
 /* Keep atmospheric light above the bottle rather than washing out its label. */
 .photo-niche-original > .photo-niche-light { opacity: calc(var(--beam-opacity) * 0.12); }
+/* The floor catches a faint echo of the beam, rather than a second full lamp. */
+.photo-floor-mirrored-layers > .photo-niche-light { opacity: calc(var(--beam-opacity) * 0.18); }
 .photo-overhead-light {
   mask-image: linear-gradient(to bottom, transparent, var(--foreground) 7%, var(--foreground) 25%, transparent 72%), radial-gradient(ellipse 48% 65% at 50% 20%, var(--foreground) 10%, transparent 100%);
   mask-composite: intersect;
