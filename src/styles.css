@@ -414,6 +414,48 @@ body:has(.detail-room) .boutique-header { position: fixed; }
   .back-control { font-size: 11px; min-height: 44px; }
 }
 
+/* Editorial closing chapter, with a quieter texture and deliberate hierarchy. */
+.boutique-story { position: relative; overflow: hidden; background: var(--scene-dark); }
+.story-texture { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.1; mask-image: linear-gradient(90deg, transparent, var(--foreground)); pointer-events: none; }
+.story-inner { position: relative; max-width: 1320px; margin: auto; padding: 100px 6% 32px; display: grid; grid-template-columns: 1.3fr 1fr; gap: 60px 8%; }
+.story-eyebrow, .story-footnote, .footer-baseline { font-size: 9px; text-transform: uppercase; letter-spacing: 0.18em; color: var(--muted-foreground); }
+.story-eyebrow { display: flex; align-items: center; gap: 24px; color: var(--primary); }
+.story-hairline { width: 65px; height: 1px; background: var(--border); }
+.story-heading h2 { font-family: var(--font-serif); font-size: clamp(44px, 5.8vw, 82px); line-height: 1.05; font-weight: 400; letter-spacing: -0.035em; margin-top: 30px; }
+.story-heading em { color: var(--primary); font-weight: 400; }
+.story-copy { max-width: 380px; align-self: center; }
+.story-star { display: block; color: var(--primary); font-size: 36px; line-height: 1; margin-bottom: 24px; }
+.story-copy p { font-size: 14px; line-height: 1.9; color: var(--muted-foreground); }
+.story-copy p + p { margin-top: 18px; }
+.story-link { display: inline-flex; gap: 35px; align-items: center; padding-block: 16px 10px; margin-top: 18px; border-bottom: 1px solid var(--border); color: var(--primary); font-size: 10px; text-transform: uppercase; letter-spacing: 0.15em; }
+.story-link span { transition: transform 250ms ease; }
+.story-link:hover span { transform: translate(3px, -3px); }
+.story-footnote { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 20px; border-top: 1px solid var(--border); padding-top: 24px; font-size: 8px; }
+.boutique-footer { padding: 40px 6% 24px; background: var(--scene-dark); }
+.footer-topline, .footer-baseline { max-width: 1160px; margin-inline: auto; display: flex; justify-content: space-between; align-items: center; gap: 24px; }
+.footer-boutique { font-family: var(--font-serif); font-size: 23px; }
+.footer-topline nav { display: flex; flex-wrap: wrap; gap: 28px; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted-foreground); }
+.footer-topline a { padding-block: 12px; transition: color 200ms; }
+.footer-topline a:hover { color: var(--primary); }
+.footer-credit-stage { max-width: 1160px; margin: 40px auto 36px; padding: 42px 0 22px; border-block: 1px solid var(--border); text-align: center; }
+.auren-byline { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.42em; color: var(--muted-foreground); margin-bottom: 18px; }
+.auren-credit .auren-name { display: block; font-family: var(--font-serif); font-size: clamp(72px, 18vw, 260px); line-height: 0.95; font-weight: 400; letter-spacing: 0.11em; padding-left: 0.11em; color: var(--primary); }
+.footer-baseline { font-size: 8px; letter-spacing: 0.13em; }
+@media (max-width: 767px) {
+  .story-inner { padding: 64px 7% 28px; grid-template-columns: 1fr; gap: 30px; }
+  .story-heading h2 { margin-top: 24px; }
+  .story-copy { max-width: none; }
+  .story-star { display: none; }
+  .story-footnote { font-size: 7px; line-height: 1.7; gap: 16px; }
+  .story-footnote > span:last-child { text-align: right; }
+  .boutique-footer { padding: 28px 7% 24px; }
+  .footer-topline { align-items: flex-start; flex-direction: column; gap: 12px; }
+  .footer-topline nav { gap: 20px; font-size: 8px; }
+  .footer-credit-stage { margin-top: 28px; padding-block: 36px 24px; }
+  .auren-byline { font-size: 10px; }
+  .footer-baseline { flex-direction: column; align-items: flex-start; gap: 10px; font-size: 7px; }
+}
+
 /* Footer designer credit: one gentle reveal, then a single champagne sheen. */
 .auren-credit {
   opacity: 0;

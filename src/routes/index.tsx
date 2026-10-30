@@ -30,7 +30,7 @@ function Index() {
   const [homeSignal, setHomeSignal] = useState(0);
 
   return (
-    <div className="stone min-h-screen text-foreground">
+    <div id="top" className="stone min-h-screen text-foreground">
       <Header count={cart.count} onBag={() => setBagOpen(true)} onHome={() => setHomeSignal((value) => value + 1)} />
       <main>
         <PerfumeScene homeSignal={homeSignal} onAdd={(id, size) => { cart.add(id, size); setBagOpen(true); }} />
@@ -73,22 +73,20 @@ function BagButton({ count, onClick }: { count: number; onClick: () => void }) {
 
 function Story() {
   return (
-    <section id="story" className="relative overflow-hidden border-t border-border">
-      <img
-        src={storyBackground}
-        alt=""
-        aria-hidden
-        loading="lazy"
-        className="absolute inset-0 h-full w-full object-cover"
-      />
-      <div className="absolute inset-0 bg-background/78" aria-hidden />
-      <div className="relative mx-auto max-w-3xl px-6 py-28 text-center md:py-36">
-        <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Our story</p>
-        <h2 className="mt-6 font-serif text-4xl md:text-6xl">Designed to be remembered.</h2>
-        <p className="mx-auto mt-8 max-w-xl leading-relaxed text-muted-foreground">
-          Your product explores fragrance through atmosphere, texture, and contrast. Five original compositions, each with
-          its own character, created for the moments you make your own.
-        </p>
+    <section id="story" className="boutique-story">
+      <img src={storyBackground} alt="" aria-hidden loading="lazy" className="story-texture" />
+      <div className="story-inner">
+        <div className="story-heading">
+          <p className="story-eyebrow"><span>01 / Our philosophy</span><span className="story-hairline" /></p>
+          <h2>A presence.<br /><em>An impression.</em></h2>
+        </div>
+        <div className="story-copy">
+          <span className="story-star" aria-hidden="true">✧</span>
+          <p>Fragrance is a quiet form of expression. A trace of warmth, a familiar texture, a moment that stays with you.</p>
+          <p>Five distinct compositions. Each with its own character. Discover the one that feels like you.</p>
+          <a href="#collection" className="story-link">Explore the collection <span aria-hidden="true">↗</span></a>
+        </div>
+        <div className="story-footnote"><span>Atmosphere / Texture / Contrast</span><span>The after-dark collection</span></div>
       </div>
     </section>
   );
@@ -118,18 +116,18 @@ function Footer() {
   }, []);
 
   return (
-    <footer className="border-t border-border px-6 py-10">
-      <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 text-sm text-muted-foreground sm:flex-row">
-        <span className="font-serif text-xl text-foreground">Your product</span>
-        <a href="#collection" className="transition-colors hover:text-foreground">Collection</a>
-        <span>Concept fragrance boutique</span>
+    <footer className="boutique-footer">
+      <div className="footer-topline">
+        <span className="footer-boutique">Your product</span>
+        <nav aria-label="Footer"><a href="#collection">Collection</a><a href="#story">Our story</a><a href="#top">Back to top ↑</a></nav>
       </div>
-      <div className="mx-auto mt-10 max-w-7xl border-t border-border pt-10 pb-4 text-center">
-        <p ref={creditRef} className="auren-credit text-sm">
-          <span className="text-muted-foreground">Designed by </span>
-          <span className="auren-name font-medium uppercase tracking-[0.35em] text-primary">AUREN</span>
+      <div className="footer-credit-stage">
+        <p ref={creditRef} className="auren-credit">
+          <span className="auren-byline">Designed by</span>
+          <span className="auren-name">AUREN</span>
         </p>
       </div>
+      <div className="footer-baseline"><span>Concept fragrance boutique</span><span>Design that leaves an impression.</span></div>
     </footer>
   );
 }
