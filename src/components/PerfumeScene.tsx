@@ -43,12 +43,15 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
     if (!mounted.current) return;
     start.current = element.getBoundingClientRect();
     setIndex(i);
+    setSize("50");
     setPhase("opening");
   };
 
   const close = () => {
     if (busy.current || phase !== "detail" || !destination.current) return;
     busy.current = true;
+    const panel = destination.current.closest("[role=dialog]");
+    if (panel instanceof HTMLElement) panel.scrollTop = 0;
     start.current = destination.current.getBoundingClientRect();
     setPhase("closing");
   };

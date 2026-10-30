@@ -250,7 +250,7 @@ body:has(.detail-room) .boutique-header { position: fixed; }
 .phase-opening .collection-lockup, .phase-detail .collection-lockup { opacity: 0; transition: opacity 250ms; }
 .phase-closing .collection-lockup { opacity: 1; transition: opacity 300ms 550ms; }
 .detail-room { position: fixed; inset: 0; z-index: 40; isolation: isolate; overflow-y: auto; background: var(--scene-dark); }
-.detail-room.phase-opening { background: transparent; }
+.detail-room.phase-opening, .detail-room.phase-closing { background: transparent; }
 .detail-room.phase-opening > .room-background, .detail-room.phase-closing > .room-background { opacity: 0; }
 .detail-layout { position: relative; min-height: 100svh; display: grid; grid-template-columns: 28% 32%; column-gap: 13%; padding: 85px 0 30px 6%; align-items: center; }
 .detail-information { padding: 25px 0; }
