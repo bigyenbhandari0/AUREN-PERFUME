@@ -189,7 +189,7 @@
   );
 }
 
-.collection-niche:focus-visible .photo-niche,
+.collection-niche:focus-visible:not([data-restored-focus]) .photo-niche,
 .selected-niche .photo-niche {
   --photo-brightness: 1.04;
   --beam-opacity: 0.88;
@@ -288,7 +288,7 @@ body:has(.detail-room) .boutique-header { position: fixed; }
 .room-background { position: absolute; inset: 0; z-index: -1; overflow: hidden; background: var(--scene-dark); }
 .room-background > img { width: 100%; height: 100%; object-fit: cover; opacity: 0.28; }
 .room-background::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, var(--scene-wall), transparent 40%, var(--scene-floor)); }
-.room-floor { position: absolute; inset: 70% 0 0; background: linear-gradient(180deg, transparent, var(--scene-floor)); border-top: 1px solid var(--border); opacity: 0.45; }
+.room-floor { position: absolute; inset: 70% 0 0; background: linear-gradient(180deg, transparent, var(--scene-floor)); border: 0; opacity: 0.45; }
 .collection-content { height: 100%; }
 .niche-gallery {
   position: absolute; top: var(--gallery-top); left: 4%; right: 4%;
@@ -300,14 +300,20 @@ body:has(.detail-room) .boutique-header { position: fixed; }
   font-weight: 400; white-space: normal; transition: opacity 550ms ease-in-out;
 }
 .collection-niche:hover, .collection-niche:focus-visible { background: transparent; }
+/* A small marker preserves keyboard orientation without boxing in the scene. */
+.collection-niche:focus-visible { outline: none; box-shadow: none; }
+.collection-niche:focus-visible:not([data-restored-focus])::after {
+  content: ""; position: absolute; top: 8px; right: 8px;
+  width: 6px; height: 6px; border: 1px solid var(--primary); border-radius: 50%;
+}
 .niche-image-box { width: 100%; height: var(--display-height); min-height: 360px; }
 .niche-caption { position: absolute; top: calc(var(--display-height) - 150cqw - 20px); left: 0; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 7px; font-family: var(--font-serif); font-size: 19px; opacity: 0; transform: translateY(6px); transition: opacity 300ms ease, transform 300ms ease; pointer-events: none; }
-.collection-niche:focus-visible .niche-caption { opacity: 1; transform: translateY(0); }
+.collection-niche:focus-visible:not([data-restored-focus]) .niche-caption { opacity: 1; transform: translateY(0); }
 .niche-discover { display: flex; align-items: center; gap: 5px; font-family: var(--font-sans); color: var(--muted-foreground); font-size: 8px; text-transform: uppercase; letter-spacing: 0.16em; }
 @media (hover: hover) {
   .niche-gallery:has(.collection-niche:hover) .collection-niche:not(:hover) { opacity: 0.78; }
 }
-.niche-gallery:has(.collection-niche:focus-visible) .collection-niche:not(:focus-visible) { opacity: 0.78; }
+.niche-gallery:has(.collection-niche:focus-visible:not([data-restored-focus])) .collection-niche:not(:focus-visible) { opacity: 0.78; }
 .collection-lockup { position: absolute; top: calc(var(--gallery-top) + var(--display-height) + var(--floor-tail) + 20px); left: 4%; }
 .collection-lockup p { font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted-foreground); }
 .collection-lockup h1 { font-family: var(--font-serif); font-size: 34px; line-height: 1.15; margin: 9px 0; font-weight: 400; }

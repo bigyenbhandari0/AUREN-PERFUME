@@ -9,6 +9,18 @@ beforeEach(() => {
 afterEach(() => { cleanup(); vi.restoreAllMocks(); });
 
 describe("Product scroll isolation", () => {
+  it("returns focus after Escape without leaving the gallery spotlight selected", async () => {
+    render(<PerfumeScene homeSignal={0} onAdd={() => {}} />);
+    const product = screen.getByRole("button", { name: "Discover Moss Theory" });
+    fireEvent.click(product);
+    await waitFor(() => expect(document.querySelector(".phase-detail")).not.toBeNull());
+    fireEvent.keyDown(window, { key: "Escape" });
+    await waitFor(() => expect(product).toHaveAttribute("data-restored-focus"));
+    expect(document.querySelector(".phase-collection")).not.toBeNull();
+    expect(product).toHaveFocus();
+    fireEvent.blur(product);
+    expect(product).not.toHaveAttribute("data-restored-focus");
+  });
   it("locks the document, carries the scene with dialog scrolling, and restores it on return", async () => {
     render(<PerfumeScene homeSignal={0} onAdd={() => {}} />);
     fireEvent.click(screen.getByRole("button", { name: "Discover Ember Veil" }));

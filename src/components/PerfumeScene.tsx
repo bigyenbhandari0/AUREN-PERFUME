@@ -158,7 +158,11 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
       motion.cancel();
       requestAnimationFrame(() => {
         if (phase === "opening") back.current?.focus({ preventScroll: true });
-        else buttons.current[index]?.focus({ preventScroll: true });
+        else {
+          const button = buttons.current[index];
+          button?.setAttribute("data-restored-focus", "");
+          button?.focus({ preventScroll: true });
+        }
       });
     }).catch(() => {});
     return () => { motion.cancel(); animation.current = null; };
@@ -193,6 +197,8 @@ export function PerfumeScene({ onAdd, homeSignal }: Props) {
           {perfumes.map((perfume, i) => (
             <Button key={perfume.id} ref={(el) => { buttons.current[i] = el; }} variant="ghost"
               className={`collection-niche ${position === i ? "touch-active" : ""} ${phase !== "collection" && index === i ? "selected-niche" : ""}`}
+              onBlur={(event) => event.currentTarget.removeAttribute("data-restored-focus")}
+              onKeyDown={(event) => event.currentTarget.removeAttribute("data-restored-focus")}
               aria-label={`Discover ${perfume.name}`} aria-haspopup="dialog" onClick={() => open(i)}>
               <div ref={(el) => { sources.current[i] = el; }} className="niche-image-box">
                 <ProductPhoto src={perfumeImages[perfume.id] ?? ""} alt={`${perfume.name} perfume in an illuminated stone niche`} glow={perfume.glow} loading="eager" />
