@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { PerfumeScene } from "@/components/PerfumeScene";
 import { Button } from "@/components/ui/button";
 import { perfumes, formatNPR } from "@/lib/perfumes";
@@ -29,8 +29,34 @@ function Index() {
   const [bagOpen, setBagOpen] = useState(false);
   const [homeSignal, setHomeSignal] = useState(0);
 
+  const pendingNavigation = useRef<MutationObserver | null>(null);
+  useEffect(() => () => pendingNavigation.current?.disconnect(), []);
+
+  const navigateSection = (event: MouseEvent<HTMLDivElement>) => {
+    const link = (event.target as Element).closest<HTMLAnchorElement>('a[href^="#"]');
+    if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    const hash = link.getAttribute("href");
+    const target = hash ? document.getElementById(hash.slice(1)) : null;
+    if (!target) return;
+    event.preventDefault();
+    pendingNavigation.current?.disconnect();
+    const scroll = () => {
+      pendingNavigation.current?.disconnect();
+      pendingNavigation.current = null;
+      target.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "start" });
+      window.history.replaceState(window.history.state, "", hash);
+    };
+    if (document.querySelector(".detail-room")) {
+      pendingNavigation.current = new MutationObserver(() => {
+        if (!document.querySelector(".detail-room")) requestAnimationFrame(scroll);
+      });
+      pendingNavigation.current.observe(document.body, { childList: true, subtree: true });
+      setHomeSignal((value) => value + 1);
+    } else scroll();
+  };
+
   return (
-    <div id="top" className="stone min-h-screen text-foreground">
+    <div id="top" className="stone min-h-screen text-foreground" onClick={navigateSection}>
       <Header count={cart.count} onBag={() => setBagOpen(true)} onHome={() => setHomeSignal((value) => value + 1)} />
       <main>
         <PerfumeScene homeSignal={homeSignal} onAdd={(id, size) => { cart.add(id, size); setBagOpen(true); }} />
@@ -72,21 +98,37 @@ function BagButton({ count, onClick }: { count: number; onClick: () => void }) {
 }
 
 function Story() {
+  const sectionRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section || !("IntersectionObserver" in window) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    section.classList.add("story-motion-ready");
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-revealed");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    section.querySelectorAll(".story-reveal").forEach((element) => observer.observe(element));
+    return () => { observer.disconnect(); section.classList.remove("story-motion-ready"); };
+  }, []);
   return (
-    <section id="story" className="boutique-story">
+    <section ref={sectionRef} id="story" className="boutique-story">
       <img src={storyBackground} alt="" aria-hidden loading="lazy" className="story-texture" />
       <div className="story-inner">
         <div className="story-heading">
-          <p className="story-eyebrow"><span>01 / Our philosophy</span><span className="story-hairline" /></p>
-          <h2>A presence.<br /><em>An impression.</em></h2>
+          <p className="story-eyebrow story-reveal"><span>01 / Our philosophy</span><span className="story-hairline" /></p>
+          <h2><span className="story-title-line story-reveal">A presence.</span><em className="story-title-line story-reveal">An impression.</em></h2>
         </div>
         <div className="story-copy">
           <span className="story-star" aria-hidden="true">✧</span>
-          <p>Fragrance is a quiet form of expression. A trace of warmth, a familiar texture, a moment that stays with you.</p>
-          <p>Five distinct compositions. Each with its own character. Discover the one that feels like you.</p>
-          <a href="#collection" className="story-link">Explore the collection <span aria-hidden="true">↗</span></a>
+          <p className="story-reveal">Fragrance is a quiet form of expression. A trace of warmth, a familiar texture, a moment that stays with you.</p>
+          <p className="story-reveal">Five distinct compositions. Each with its own character. Discover the one that feels like you.</p>
+          <a href="#collection" className="story-link story-reveal">Explore the collection <span aria-hidden="true">↗</span></a>
         </div>
-        <div className="story-footnote"><span>Atmosphere / Texture / Contrast</span><span>The after-dark collection</span></div>
+        <div className="story-footnote story-reveal"><span>Atmosphere / Texture / Contrast</span><span>The after-dark collection</span></div>
       </div>
     </section>
   );

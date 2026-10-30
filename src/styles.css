@@ -552,3 +552,19 @@ body:has(.detail-room) .boutique-header { position: fixed; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 1ms !important; animation-delay: 0ms !important; transition-duration: 1ms !important; scroll-behavior: auto !important; }
 }
+
+/* Native anchor motion, with one-shot editorial text reveals. */
+html { scroll-behavior: smooth; }
+#story, #collection { scroll-margin-top: 24px; }
+.story-title-line { display: block; }
+.story-motion-ready .story-reveal:not(.is-revealed) { opacity: 0; transform: translateY(14px); }
+.story-reveal.is-revealed { animation: story-text-arrive 850ms var(--ease-lux) both; }
+.story-heading .story-title-line:last-child { animation-delay: 110ms; }
+.story-copy p:nth-of-type(2) { animation-delay: 100ms; }
+.story-copy .story-link { animation-delay: 180ms; }
+@keyframes story-text-arrive { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .story-motion-ready .story-reveal { opacity: 1; transform: none; }
+  .story-reveal.is-revealed { animation: none; }
+}
