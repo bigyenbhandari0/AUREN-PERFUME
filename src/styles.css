@@ -578,21 +578,66 @@ html { scroll-behavior: smooth; }
 .phase-opening .selected-niche .photo-product-rig,
 .phase-detail .selected-niche .photo-product-rig {
   animation: bottle-arrive 900ms cubic-bezier(0.22, 1, 0.36, 1) 0ms 1 both,
-    bottle-hover 6400ms ease-in-out 900ms infinite;
+    bottle-hover 7200ms linear 900ms infinite;
 }
 .phase-closing .selected-niche .photo-product-rig { animation: bottle-land 650ms cubic-bezier(0.4, 0, 0.2, 1) both; }
 @keyframes bottle-arrive {
   0%, 15% { transform: translate(0, 0) rotate(0deg); }
-  100% { transform: translate(0, -3cqw) rotate(-1.2deg); }
+  100% { transform: translate(0, -3.4cqw) rotate(-0.6deg); }
 }
 @keyframes bottle-hover {
-  0%, 100% { transform: translate(0, -3cqw) rotate(-1.2deg); }
-  25% { transform: translate(0.6cqw, -4cqw) rotate(-0.3deg); }
-  50% { transform: translate(0, -3cqw) rotate(0.6deg); }
-  75% { transform: translate(-0.6cqw, -2cqw) rotate(-0.4deg); }
+  0.0000% { transform: translate(0.0000cqw, -3.4000cqw) rotate(-0.6000deg); }
+  2.0833% { transform: translate(0.0457cqw, -3.4077cqw) rotate(-0.5949deg); }
+  4.1667% { transform: translate(0.0906cqw, -3.4307cqw) rotate(-0.5796deg); }
+  6.2500% { transform: translate(0.1339cqw, -3.4685cqw) rotate(-0.5543deg); }
+  8.3333% { transform: translate(0.1750cqw, -3.5206cqw) rotate(-0.5196deg); }
+  10.4167% { transform: translate(0.2131cqw, -3.5860cqw) rotate(-0.4760deg); }
+  12.5000% { transform: translate(0.2475cqw, -3.6636cqw) rotate(-0.4243deg); }
+  14.5833% { transform: translate(0.2777cqw, -3.7521cqw) rotate(-0.3653deg); }
+  16.6667% { transform: translate(0.3031cqw, -3.8500cqw) rotate(-0.3000deg); }
+  18.7500% { transform: translate(0.3234cqw, -3.9556cqw) rotate(-0.2296deg); }
+  20.8333% { transform: translate(0.3381cqw, -4.0671cqw) rotate(-0.1553deg); }
+  22.9167% { transform: translate(0.3470cqw, -4.1825cqw) rotate(-0.0783deg); }
+  25.0000% { transform: translate(0.3500cqw, -4.3000cqw) rotate(-0.0000deg); }
+  27.0833% { transform: translate(0.3470cqw, -4.4175cqw) rotate(0.0783deg); }
+  29.1667% { transform: translate(0.3381cqw, -4.5329cqw) rotate(0.1553deg); }
+  31.2500% { transform: translate(0.3234cqw, -4.6444cqw) rotate(0.2296deg); }
+  33.3333% { transform: translate(0.3031cqw, -4.7500cqw) rotate(0.3000deg); }
+  35.4167% { transform: translate(0.2777cqw, -4.8479cqw) rotate(0.3653deg); }
+  37.5000% { transform: translate(0.2475cqw, -4.9364cqw) rotate(0.4243deg); }
+  39.5833% { transform: translate(0.2131cqw, -5.0140cqw) rotate(0.4760deg); }
+  41.6667% { transform: translate(0.1750cqw, -5.0794cqw) rotate(0.5196deg); }
+  43.7500% { transform: translate(0.1339cqw, -5.1315cqw) rotate(0.5543deg); }
+  45.8333% { transform: translate(0.0906cqw, -5.1693cqw) rotate(0.5796deg); }
+  47.9167% { transform: translate(0.0457cqw, -5.1923cqw) rotate(0.5949deg); }
+  50.0000% { transform: translate(0.0000cqw, -5.2000cqw) rotate(0.6000deg); }
+  52.0833% { transform: translate(-0.0457cqw, -5.1923cqw) rotate(0.5949deg); }
+  54.1667% { transform: translate(-0.0906cqw, -5.1693cqw) rotate(0.5796deg); }
+  56.2500% { transform: translate(-0.1339cqw, -5.1315cqw) rotate(0.5543deg); }
+  58.3333% { transform: translate(-0.1750cqw, -5.0794cqw) rotate(0.5196deg); }
+  60.4167% { transform: translate(-0.2131cqw, -5.0140cqw) rotate(0.4760deg); }
+  62.5000% { transform: translate(-0.2475cqw, -4.9364cqw) rotate(0.4243deg); }
+  64.5833% { transform: translate(-0.2777cqw, -4.8479cqw) rotate(0.3653deg); }
+  66.6667% { transform: translate(-0.3031cqw, -4.7500cqw) rotate(0.3000deg); }
+  68.7500% { transform: translate(-0.3234cqw, -4.6444cqw) rotate(0.2296deg); }
+  70.8333% { transform: translate(-0.3381cqw, -4.5329cqw) rotate(0.1553deg); }
+  72.9167% { transform: translate(-0.3470cqw, -4.4175cqw) rotate(0.0783deg); }
+  75.0000% { transform: translate(-0.3500cqw, -4.3000cqw) rotate(0.0000deg); }
+  77.0833% { transform: translate(-0.3470cqw, -4.1825cqw) rotate(-0.0783deg); }
+  79.1667% { transform: translate(-0.3381cqw, -4.0671cqw) rotate(-0.1553deg); }
+  81.2500% { transform: translate(-0.3234cqw, -3.9556cqw) rotate(-0.2296deg); }
+  83.3333% { transform: translate(-0.3031cqw, -3.8500cqw) rotate(-0.3000deg); }
+  85.4167% { transform: translate(-0.2777cqw, -3.7521cqw) rotate(-0.3653deg); }
+  87.5000% { transform: translate(-0.2475cqw, -3.6636cqw) rotate(-0.4243deg); }
+  89.5833% { transform: translate(-0.2131cqw, -3.5860cqw) rotate(-0.4760deg); }
+  91.6667% { transform: translate(-0.1750cqw, -3.5206cqw) rotate(-0.5196deg); }
+  93.7500% { transform: translate(-0.1339cqw, -3.4685cqw) rotate(-0.5543deg); }
+  95.8333% { transform: translate(-0.0906cqw, -3.4307cqw) rotate(-0.5796deg); }
+  97.9167% { transform: translate(-0.0457cqw, -3.4077cqw) rotate(-0.5949deg); }
+  100.0000% { transform: translate(-0.0000cqw, -3.4000cqw) rotate(-0.6000deg); }
 }
 @keyframes bottle-land {
-  from { transform: var(--return-pose, translate(0, -3cqw) rotate(-1.2deg)); }
+  from { transform: var(--return-pose, translate(0, -3.4cqw) rotate(-0.6deg)); }
   to { transform: translate(0, 0) rotate(0deg); }
 }
 
@@ -610,21 +655,66 @@ html { scroll-behavior: smooth; }
 .phase-opening .selected-niche .photo-cap,
 .phase-detail .selected-niche .photo-cap {
   animation: cap-unveil 680ms cubic-bezier(0.22, 1, 0.36, 1) 220ms 1 both,
-    cap-hover 7200ms ease-in-out 900ms infinite;
+    cap-hover 7200ms linear 900ms infinite;
 }
 .phase-closing .selected-niche .photo-cap { animation: cap-reseat 650ms cubic-bezier(0.4, 0, 0.2, 1) both; }
 @keyframes cap-unveil {
   0% { transform: translateY(0) rotate(0deg); }
-  100% { transform: translateY(-16cqw) rotate(3deg); }
+  100% { transform: translateY(-15.4cqw) rotate(1.4deg); }
 }
 @keyframes cap-hover {
-  0%, 100% { transform: translate(0, -16cqw) rotate(3deg); }
-  25% { transform: translate(-0.5cqw, -17cqw) rotate(1deg); }
-  50% { transform: translate(0, -16cqw) rotate(-1deg); }
-  75% { transform: translate(0.5cqw, -15cqw) rotate(1deg); }
+  0.0000% { transform: translate(-0.0000cqw, -15.4000cqw) rotate(1.4000deg); }
+  2.0833% { transform: translate(-0.0326cqw, -15.3853cqw) rotate(1.4347deg); }
+  4.1667% { transform: translate(-0.0647cqw, -15.3773cqw) rotate(1.4448deg); }
+  6.2500% { transform: translate(-0.0957cqw, -15.3761cqw) rotate(1.4302deg); }
+  8.3333% { transform: translate(-0.1250cqw, -15.3818cqw) rotate(1.3912deg); }
+  10.4167% { transform: translate(-0.1522cqw, -15.3942cqw) rotate(1.3283deg); }
+  12.5000% { transform: translate(-0.1768cqw, -15.4131cqw) rotate(1.2427deg); }
+  14.5833% { transform: translate(-0.1983cqw, -15.4382cqw) rotate(1.1359deg); }
+  16.6667% { transform: translate(-0.2165cqw, -15.4691cqw) rotate(1.0096deg); }
+  18.7500% { transform: translate(-0.2310cqw, -15.5052cqw) rotate(0.8660deg); }
+  20.8333% { transform: translate(-0.2415cqw, -15.5460cqw) rotate(0.7076deg); }
+  22.9167% { transform: translate(-0.2479cqw, -15.5907cqw) rotate(0.5372deg); }
+  25.0000% { transform: translate(-0.2500cqw, -15.6386cqw) rotate(0.3575deg); }
+  27.0833% { transform: translate(-0.2479cqw, -15.6888cqw) rotate(0.1717deg); }
+  29.1667% { transform: translate(-0.2415cqw, -15.7405cqw) rotate(-0.0170deg); }
+  31.2500% { transform: translate(-0.2310cqw, -15.7928cqw) rotate(-0.2055deg); }
+  33.3333% { transform: translate(-0.2165cqw, -15.8448cqw) rotate(-0.3904deg); }
+  35.4167% { transform: translate(-0.1983cqw, -15.8957cqw) rotate(-0.5687deg); }
+  37.5000% { transform: translate(-0.1768cqw, -15.9445cqw) rotate(-0.7372deg); }
+  39.5833% { transform: translate(-0.1522cqw, -15.9904cqw) rotate(-0.8931deg); }
+  41.6667% { transform: translate(-0.1250cqw, -16.0326cqw) rotate(-1.0337deg); }
+  43.7500% { transform: translate(-0.0957cqw, -16.0704cqw) rotate(-1.1566deg); }
+  45.8333% { transform: translate(-0.0647cqw, -16.1032cqw) rotate(-1.2598deg); }
+  47.9167% { transform: translate(-0.0326cqw, -16.1304cqw) rotate(-1.3414deg); }
+  50.0000% { transform: translate(-0.0000cqw, -16.1515cqw) rotate(-1.4000deg); }
+  52.0833% { transform: translate(0.0326cqw, -16.1662cqw) rotate(-1.4347deg); }
+  54.1667% { transform: translate(0.0647cqw, -16.1742cqw) rotate(-1.4448deg); }
+  56.2500% { transform: translate(0.0957cqw, -16.1754cqw) rotate(-1.4302deg); }
+  58.3333% { transform: translate(0.1250cqw, -16.1697cqw) rotate(-1.3912deg); }
+  60.4167% { transform: translate(0.1522cqw, -16.1573cqw) rotate(-1.3283deg); }
+  62.5000% { transform: translate(0.1768cqw, -16.1384cqw) rotate(-1.2427deg); }
+  64.5833% { transform: translate(0.1983cqw, -16.1133cqw) rotate(-1.1359deg); }
+  66.6667% { transform: translate(0.2165cqw, -16.0824cqw) rotate(-1.0096deg); }
+  68.7500% { transform: translate(0.2310cqw, -16.0463cqw) rotate(-0.8660deg); }
+  70.8333% { transform: translate(0.2415cqw, -16.0055cqw) rotate(-0.7076deg); }
+  72.9167% { transform: translate(0.2479cqw, -15.9608cqw) rotate(-0.5372deg); }
+  75.0000% { transform: translate(0.2500cqw, -15.9129cqw) rotate(-0.3575deg); }
+  77.0833% { transform: translate(0.2479cqw, -15.8627cqw) rotate(-0.1717deg); }
+  79.1667% { transform: translate(0.2415cqw, -15.8110cqw) rotate(0.0170deg); }
+  81.2500% { transform: translate(0.2310cqw, -15.7587cqw) rotate(0.2055deg); }
+  83.3333% { transform: translate(0.2165cqw, -15.7067cqw) rotate(0.3904deg); }
+  85.4167% { transform: translate(0.1983cqw, -15.6558cqw) rotate(0.5687deg); }
+  87.5000% { transform: translate(0.1768cqw, -15.6070cqw) rotate(0.7372deg); }
+  89.5833% { transform: translate(0.1522cqw, -15.5611cqw) rotate(0.8931deg); }
+  91.6667% { transform: translate(0.1250cqw, -15.5189cqw) rotate(1.0337deg); }
+  93.7500% { transform: translate(0.0957cqw, -15.4811cqw) rotate(1.1566deg); }
+  95.8333% { transform: translate(0.0647cqw, -15.4483cqw) rotate(1.2598deg); }
+  97.9167% { transform: translate(0.0326cqw, -15.4211cqw) rotate(1.3414deg); }
+  100.0000% { transform: translate(0.0000cqw, -15.4000cqw) rotate(1.4000deg); }
 }
 @keyframes cap-reseat {
-  from { transform: var(--return-pose, translateY(-16cqw) rotate(3deg)); }
+  from { transform: var(--return-pose, translateY(-15.4cqw) rotate(1.4deg)); }
   to { transform: translateY(0) rotate(0deg); }
 }
 @media (prefers-reduced-motion: reduce) {
